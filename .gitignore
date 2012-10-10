@@ -3,6 +3,10 @@
 *.lo
 *.o
 
+#fichiers pourris
+*~ 
+\#*
+
 # Compiled Dynamic libraries
 *.so
 
