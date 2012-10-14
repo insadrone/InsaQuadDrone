@@ -7,6 +7,9 @@
 *~ 
 \#*
 
+#binaires
+./sdk_apps/keyboard_control/bin/*
+
 # Compiled Dynamic libraries
 *.so
 
