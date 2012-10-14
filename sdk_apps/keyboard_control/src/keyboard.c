@@ -22,33 +22,75 @@ C_RESULT init_game_pad() {
     return C_OK;
 }
 
+void print_state(input_state_pcmd_t state) {
+  printf("===================================\n");
+  printf("FLAG = %d\n",state.flag);
+  printf("PHI = %4.3f  || THETA = %4.3f\n",state.phi,state.theta);
+  printf("GAZ = %4.3f  || YAW = %4.3f\n",state.gaz,state.yaw);
+  printf("PSI = %4.3f  || PSI_A = %4.3f\n",state.psi,state.psi_accuracy);
+  printf("\033[5A");
+}
+
+
 C_RESULT update_game_pad() {
   char ch = '0';
+  input_state_t *state;
+  static float pitch=0.0f,roll=0.0f,gaz=0.0f,yaw=0.0f;
+  static int fly=0;
+    
+  state = ardrone_tool_input_get_state(); 
+  print_state(state->pcmd);
+
   ch = getchar();
   if (ch == 't') {
     ardrone_tool_set_ui_pad_select(1);
-    if (ardrone_tool_set_ui_pad_start(1) == C_OK) {
-      printf ("décollageeeeeeee !!");
-    } else {
-      printf("probleme\n");
-    }
+    ardrone_tool_set_ui_pad_start(1);
+    printf("decollageee");
   } else if (ch == 'l') {
-    printf ("atterissage !!");
     ardrone_tool_set_ui_pad_start(0);
+  } else if (ch == 'a') {
+    printf("gaaz\n");
+    fly = 0;
+    gaz = (gaz < 0.9) ? gaz + 0.1 : 1.;
+  } else if (ch == 'e') {
+    printf("gaz\n");
+    fly = 0;
+    gaz = (gaz > -0.9) ? gaz - 0.1 : -1.;
   } else if (ch == 'q') {
-    ardrone_tool_set_ui_pad_ab(0);
-    ardrone_tool_set_ui_pad_ag(1);
+    fly = 1;
+    pitch=0.;
+    roll = 0.3;
   } else if (ch == 'd') {
-    ardrone_tool_set_ui_pad_ab(1);
-    ardrone_tool_set_ui_pad_ag(0);
+    fly = 1;
+    pitch=0.;
+    roll = -0.3;
   } else if (ch == 'z') {
-    ardrone_tool_set_ui_pad_ad(1);
-    ardrone_tool_set_ui_pad_ah(0);
+    fly = 1;
+    pitch=0.3;
+    roll = 0;
   } else if (ch == 's') {
-    ardrone_tool_set_ui_pad_ad(0);
-    ardrone_tool_set_ui_pad_ah(1);
+    fly = 1;
+    pitch=-0.3;
+    roll = 0;
+  } else if (ch == 'w') {
+    fly = 0;
+    pitch=0.;
+    yaw = 0.5;
+    roll = 0.;
+  } else if (ch == 'c') {
+    fly = 0;
+    pitch=0.;
+    yaw = -0.5;  
+    roll = 0;
+  } else {
+    fly = 0;
+    pitch=0.0f;
+    roll=0.0f;
+    gaz=0.0f;
+    yaw=0.0f;
   }
 
+  ardrone_tool_set_progressive_cmd( fly,/*roll*/roll,/*pitch*/pitch,/*gaz*/gaz,/*yaw*/yaw,0.0,0.0);
   return C_OK;
 }
 

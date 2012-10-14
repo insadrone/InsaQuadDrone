@@ -18,7 +18,7 @@ int main(void)
     int msglen;
     char buf[512];
   
-    if(udpclient_init(&udp,"192.168.2.1",6444)) diep("udpclient_init");
+    if(udpclient_init(&udp,"192.168.1.3",6444)) diep("udpclient_init");
   
     for (i=0; i<10; i++) {
 	printf((char*)"Sending packet %d\n", i);
