@@ -1,0 +1,69 @@
+#include <SoftwareSerial.h>
+
+// GPS PINS
+#define SoftrxPin 2
+#define SofttxPin 3
+
+// initialisation de la liasion série
+SoftwareSerial mySerial = SoftwareSerial (SoftrxPin, SofttxPin);
+
+int incomingByte = 0;		// Pour stocker les données entrantes
+// Stocke la chaine GPS
+char line[300] = "";
+// Position dans la chaine
+int index = 0;
+// La chaine recherchée
+char commandeGPR[7] = "$GPRMC";
+// Chaine ok
+int commande_ok = 0;
+
+void
+setup ()
+{
+  Serial.begin (9600);		// ouvre le port série et règle le debit à 9600 bps
+  mySerial.begin (9600);	// pareil pour les ports digitaux
+  pinMode (SoftrxPin, INPUT);
+}
+
+void
+loop ()
+{
+  // Envoie des données que quand on en recoit
+  if (mySerial.available () > 0)
+    {
+      // On lit le byte:
+      incomingByte = mySerial.read ();
+      line[index] = incomingByte;
+
+      if (incomingByte == 10)
+	{
+
+	  // Verifie si la chaine est bien de type $GPR
+	  for (int i = 0; i < 4; i++)
+	    {
+	      if (line[i] != commandeGPR[i])
+		{
+		  commande_ok = 1;
+		  break;
+		}
+	    }
+	  //-----------------------------------------------
+
+	  // Si on a récupéré la bonne chaine, on l'affiche
+	  if (commande_ok == 0)
+	    {
+	      for (int pc = 0; pc <= index; pc++)
+		{
+		  Serial.write (line[pc]);
+		}
+	    }
+	  //-------------------------------------------------
+	  index = 0;
+	  commande_ok = 0;
+	}
+      else
+	{
+	  index++;
+	}
+    }
+}
