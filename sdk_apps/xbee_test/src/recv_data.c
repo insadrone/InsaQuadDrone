@@ -14,6 +14,7 @@ int main(void)
 {
     udp_struct udp;
     int i;
+    int cnt=0;
 
     int msglen;
     char buf[512];
@@ -21,7 +22,6 @@ int main(void)
     if(udpserver_init(&udp,6444,1)) diep("udpServer_Init");
   
     for (i=0; i<10; i++) {
-	int cnt=0;
 	do {
 	    msglen = udpserver_receive(&udp, buf, 512);
 	    cnt++;
