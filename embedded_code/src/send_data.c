@@ -22,7 +22,7 @@ int main(void)
   
     for (i=0; i<10; i++) {
 	printf((char*)"Sending packet %d\n", i);
-	msglen=sprintf(buf, (char*)"This is packet %d\n", i);
+	msglen=sprintf(buf, (char*)"This is packet %d", i) + 1;
 	if (udpclient_send(&udp, buf, msglen)) diep("send");
 	usleep(100000);
     }
