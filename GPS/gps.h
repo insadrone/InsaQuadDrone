@@ -9,5 +9,5 @@ struct gps_coordinate{
    double longitude;
 };
 
-int gps( char* str_gps, struct gps_coordinate *p );
+void extract_coord( char str_gps[], struct gps_coordinate *point );
 void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, double *distance, double *angle );
