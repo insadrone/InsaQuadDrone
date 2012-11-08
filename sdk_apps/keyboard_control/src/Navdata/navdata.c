@@ -14,15 +14,15 @@ inline C_RESULT demo_navdata_client_process( const navdata_unpacked_t* const nav
 {
    const navdata_demo_t*nd = &navdata->navdata_demo;
 
-	/* printf("=====================\nNavdata for flight demonstrations =====================\n\n"); */
+   printf("=====================\nNavdata for flight demonstrations =====================\n\n");
 
-   //printf("Control state : %i\n",nd->ctrl_state);
+   printf("Control state : %i\n",nd->ctrl_state);
    printf("Battery level : %i mV\n",nd->vbat_flying_percentage); 
-	/* printf("Orientation   : [Theta] %4.3f  [Phi] %4.3f  [Psi] %4.3f\n",nd->theta,nd->phi,nd->psi); */
-	/* printf("Altitude      : %i\n",nd->altitude); */
-	/* printf("Speed         : [vX] %4.3f  [vY] %4.3f  [vZPsi] %4.3f\n",nd->theta,nd->phi,nd->psi); */
+   printf("Orientation   : [Theta] %4.3f  [Phi] %4.3f  [Psi] %4.3f\n",nd->theta,nd->phi,nd->psi/1000);
+   printf("Altitude      : %i\n",nd->altitude);
+   printf("Speed         : [vX] %4.3f  [vY] %4.3f  [vZPsi] %4.3f\n",nd->theta,nd->phi,nd->psi);
 
-	 printf("\033[1A");
+   printf("\033[1A");
 
   return C_OK;
 }

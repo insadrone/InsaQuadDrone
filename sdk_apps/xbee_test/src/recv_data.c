@@ -21,12 +21,12 @@ int main(void)
   
     if(udpserver_init(&udp,6444,1)) diep("udpServer_Init");
   
-    for (i=0; i<10; i++) {
+    while (1) {
 	do {
 	    msglen = udpserver_receive(&udp, buf, 512);
 	    cnt++;
 	} while(msglen<=0);
-	printf("Received at cnt=%d -> '%s'\n\n", cnt, buf);
+	printf("%s", buf);
     }
   
     udpserver_close(&udp);

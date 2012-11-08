@@ -39,7 +39,7 @@ C_RESULT update_game_pad() {
   static int fly=0;
     
   state = ardrone_tool_input_get_state(); 
-  print_state(state->pcmd);
+  //print_state(state->pcmd);
 
   ch = getchar();
   if (ch == 't') {

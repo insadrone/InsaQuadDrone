@@ -77,10 +77,10 @@ void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, doubl
     else
     {	
 	// convert to radian
-     depart->latitude = depart->latitude * 3.14/ 180.0;
-     depart->longitude = depart->longitude * 3.14/ 180.0;
-     dest->latitude = dest->latitude * 3.14/ 180.0;	
-     dest->longitude = dest->longitude * 3.14/ 180.0;
+     depart->latitude = depart->latitude * M_PI/ 180.0;
+     depart->longitude = depart->longitude * M_PI/ 180.0;
+     dest->latitude = dest->latitude * M_PI/ 180.0;	
+     dest->longitude = dest->longitude * M_PI/ 180.0;
      //==============//
      // calcul angle //
      //==============//
@@ -88,7 +88,7 @@ void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, doubl
 	//calcul direction // North
      y = sin(dest->longitude - depart->longitude) * cos(dest->latitude);
      x = cos(depart->latitude)*sin(dest->latitude) - sin(depart->latitude)*cos(dest->latitude)*cos(dest->longitude - depart->longitude);
-     *angle = (atan2(y,x) * 180.0/3.14);
+     *angle = (atan2(y,x) * 180.0/M_PI);
  
       //================// 
      // calcul distance //
@@ -105,7 +105,7 @@ void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, doubl
 
 int main ()
 {//coordonne de depart
-    char str_gps[] = "$GPRMC,220516,A,4334.204,N,00127.934,W,173.8,231.8,130694,004.2,W*70";
+    char str_gps[] = "$GPRMC,220516,A,4851.600,N,00220.4000,W,173.8,231.8,130694,004.2,W*70";
     struct gps_coordinate *depart;
     depart = malloc(sizeof(struct gps_coordinate));
     printf("%s\n", str_gps);
@@ -113,7 +113,7 @@ int main ()
    //coordonnne de dest 
     struct gps_coordinate *dest;
     dest = malloc(sizeof(struct gps_coordinate));
-    char str_gps_dest[] =  "$GPRMC,220516,A,4334.203,N,00127.908,W,173.8,231.8,130694,004.2,W*70";	
+    char str_gps_dest[] =  "$GPRMC,220516,A,5038.400,N,00304.200,E,173.8,231.8,130694,004.2,W*70";	
     printf("%s\n", str_gps_dest);
     extract_coord(str_gps_dest,dest);
 
