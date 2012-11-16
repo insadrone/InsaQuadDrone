@@ -25,8 +25,9 @@ GENERIC_BINARIES_SOURCE_DIR:=$(SRC_DIR)
 
 GENERIC_BINARIES_COMMON_SOURCE_FILES+=			\
    Navdata/navdata.c    \
-   Video/video_stage.c   \
-   keyboard.c
+   Video/video_stage.c  \
+   Control/drone_control.c \
+   Auto/auto.c
 
 GENERIC_INCLUDES+=					\
 	$(SRC_DIR) \
@@ -77,4 +78,3 @@ $(MAKECMDGOALS): build_libs
 
 build_libs:
 	@$(MAKE) -C $(SDK_PATH)/Soft/Build $(TMP_SDK_FLAGS) $(SDK_FLAGS) $(MAKECMDGOALS) USE_LINUX=yes
-
