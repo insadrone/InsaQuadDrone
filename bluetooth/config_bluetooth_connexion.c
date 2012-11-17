@@ -2,9 +2,9 @@
 
 
 /* tests */
-int main(void)
+/*int main(void)
 {
-	/* test read file to extract channel number */
+*/	// test read file to extract channel number
 	/*int i=-3;
 
 	i = read_file("/home/flo/tmp0.txt");
@@ -12,11 +12,11 @@ int main(void)
 
 
 	/* test all */	
-	if(config() < 0)
+/*	if(config() < 0)
 		return 1;
 	else
 		return 0;
-}
+}*/
 
 
 
@@ -40,7 +40,7 @@ int config()
 	printf("Kill all bluetooth com...\t");
 	if(system("rfcomm release all") < 0)
 	{
-		perror("Error killing bluetooth connection\n");
+		perror("Error killing bluetooth connection");
 		return -1;
 	}
 	printf("Done\n");
@@ -50,7 +50,7 @@ int config()
 	printf("Looking for all available channels...\n");
 	if(system("sdptool records "MAC_ADDR">> /home/tmp.txt") < 0)
 	{
-		perror("Error saving bluetooth channels\n");
+		perror("Error saving bluetooth channels");
 		return -1;
 	}
 	printf("Done\n");
@@ -59,7 +59,7 @@ int config()
 	printf("Looking for ShareGPS channel...\t");
 	if( (channel = read_file("/home/tmp.txt")) < 0)
 	{
-		perror("Error finding ShareGPS channel\n");
+		printf("Error finding ShareGPS channel\n");
 		return -1;
 	}
 	printf("Done, channel: %d\n", channel);
@@ -67,7 +67,7 @@ int config()
 	// remove temporary file
 	if(system("rm /home/tmp.txt") < 0)
 	{
-		perror("Error removing temporary file\n");
+		perror("Error removing temporary file");
 	}
 	
 	// convert channel number to string
@@ -80,7 +80,7 @@ int config()
 	// bind to the device using its MAC @ and the channel found
 	if(system(cmd) < 0)
 	{
-		perror("Error binding to device\n");
+		perror("Error binding to device");
 		return -1;
 	}
 	printf("Done\n");
