@@ -52,9 +52,23 @@ int main() {
 	res = read(fd,buf,255);
 	buf[res]='\0';
 
+printf("\n======================================================\n");
+printf("Raw data from device:\n");
+printf("%s\n\n", buf);
+
+if( (buf[1] = 'G') && (buf[2] = 'P') && (buf[3] = 'R') && (buf[4] = 'M') && (buf[5] == 'C') )
+{
+
+printf("Printf inside function 'extract_coord' from gps.c made by Mathieu:\n");
+
 	extract_coord(buf, coordinate);
 
-	printf("\nlat: %lf\tlong: %lf\n", coordinate->latitude, coordinate->longitude);
+printf("What I get after the function call:\n");
+	printf("lat: %lf\tlong: %lf\n", coordinate->latitude, coordinate->longitude);
+
+}
+else
+printf("No GPRMC string\n");
 	/*
 		send UDP to station instead of printf
 	*/
