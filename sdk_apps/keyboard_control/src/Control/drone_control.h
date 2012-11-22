@@ -7,7 +7,7 @@
 #define GAZ_POWER 0.8
 #define THETA_POWER 0.05
 #define PHI_POWER 0.05
-#define YAW_POWER 0.5
+#define YAW_POWER 0.3
 
 int is_landed(int ctrl_state);
 

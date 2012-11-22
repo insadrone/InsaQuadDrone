@@ -24,6 +24,7 @@
 //Local project
 #include <Video/video_stage.h>
 #include "Auto/auto.h"
+#include "Comm/gps_comm.h"
 
 //Keyboard managment
 #include "Keyboard/keyboard.h"
@@ -47,6 +48,7 @@ C_RESULT ardrone_tool_init_custom(void)
   /* Start all threads of your application */
   //START_THREAD( video_stage, NULL );
   START_THREAD( auto_control, NULL );
+  START_THREAD( receive_gps, NULL );
   
   return C_OK;
 }
@@ -58,6 +60,7 @@ C_RESULT ardrone_tool_shutdown_custom(void)
   /* Relinquish all threads of your application */
   //JOIN_THREAD( video_stage );
   JOIN_THREAD( auto_control );
+  JOIN_THREAD( receive_gps );
 
   /* Unregistering for the current device */
   //ardrone_tool_input_remove( &gamepad );
@@ -82,7 +85,7 @@ C_RESULT signal_exit()
 BEGIN_THREAD_TABLE
   THREAD_TABLE_ENTRY( ardrone_control, 2 )
   THREAD_TABLE_ENTRY( navdata_update, 20 )
-//THREAD_TABLE_ENTRY( video_stage, 20 )
   THREAD_TABLE_ENTRY( auto_control, 20 )
+  THREAD_TABLE_ENTRY( receive_gps, 500 )
 END_THREAD_TABLE
 

@@ -122,6 +122,7 @@ C_RESULT land() {
  */
 C_RESULT turn_left() {  
   drone_state.yaw = YAW_POWER;
+  printf("turn left\n");
   return C_OK;
 }
 
@@ -132,6 +133,7 @@ C_RESULT turn_left() {
  */
 C_RESULT turn_right() {
   drone_state.yaw = -YAW_POWER;
+  printf("turn right\n");
   return C_OK;
 }
 
