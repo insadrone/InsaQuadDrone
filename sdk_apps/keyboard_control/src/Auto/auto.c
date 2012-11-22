@@ -88,9 +88,9 @@ void turn_angle2(float target_angle, float tol) {
   if (target_angle < 0) target_angle += 360;
 
   if (target_angle > angle_360) {
-    (target_angle - angle_360) < 180 ? send_order(turn_left) : send_order(turn_right);
+      (target_angle - angle_360) < 180 ? send_order(turn_left,NULL) : send_order(turn_right,NULL);
   } else {
-    (angle_360 - target_angle) < 180 ? send_order(turn_right) : send_order(turn_left);
+      (angle_360 - target_angle) < 180 ? send_order(turn_right,NULL) : send_order(turn_left,NULL);
   }
 
   while (!(sauv_ndata.psi_current > angle_inf && sauv_ndata.psi_current < angle_sup)) {
@@ -98,7 +98,7 @@ void turn_angle2(float target_angle, float tol) {
     usleep(100);
   }
   
-  send_order(stop);
+  send_order(stop,NULL);
   sleep(1);
   printf("kikoo\n");
     
@@ -121,11 +121,11 @@ DEFINE_THREAD_ROUTINE(auto_control, data) {
       if (sauv_ndata.tag_detected > 0) {
 
 	if (landed == 0){
-	  send_order(take_off);
+	    send_order(take_off,NULL);
 	  landed = 1;
 	  //calibrate_magneto();
 	} else {
-	  send_order(land);
+	    send_order(land,NULL);
 	  sleep(1);
 	  landed = 0;
 	}
@@ -133,8 +133,14 @@ DEFINE_THREAD_ROUTINE(auto_control, data) {
 	if (landed == 1) {
 	  sleep(5);
 	  printf("start turn\n");
-	  calibrate_magneto();
-	  sleep(6);
+	  calibrate_magneto(NULL);
+	  sleep(4);
+	  small_move(up);
+	  sleep(1);
+	  small_move(up);
+	  sleep(1);
+	  small_move(up);
+	  sleep(1);
 	  turn_angle2(0,5.0);
 	  sleep(1);
 	  turn_angle2(90,5.0);
@@ -146,11 +152,11 @@ DEFINE_THREAD_ROUTINE(auto_control, data) {
 	  turn_angle2(0,5.0);
 	  sleep(1);
 	  //hoola_hoop();
-	  send_order(backward);
+	  send_order(backward,NULL);
 	  sleep(5);
-	  send_order(stop);
+	  send_order(stop,NULL);
 	  sleep(1);
-	  send_order(land);
+	  send_order(land,NULL);
 	}
 
 	/* printf("tag detected ["); */
