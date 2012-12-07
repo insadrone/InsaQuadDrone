@@ -34,7 +34,7 @@ int main(void)
       printf("envoi de : %s", tty_buf);
       msglen=sprintf(udp_buf, tty_buf) + 1;
       if (udpclient_send(&udp, udp_buf, msglen)) diep("send");
-      sleep(1);
+      usleep(10);
     }
     
     close_term(fd);

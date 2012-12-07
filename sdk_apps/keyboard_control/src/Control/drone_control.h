@@ -24,6 +24,8 @@ int32_t d2time(int32_t, int32_t);
 
 int is_landed(int ctrl_state);
 
+void recover_emergency();
+
 char* print_state_string();
 
 void null_state(input_state_pcmd_t *);

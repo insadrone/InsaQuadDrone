@@ -15,6 +15,7 @@ char buf_target[512];
 
 int start_listen;
 
+comm_datas ret_datas;
 
 void diep(const char *s)
 {
@@ -30,6 +31,10 @@ void init_comm() {
 void stop_comm() {
   printf("stop comm true\n");
   start_listen = 0;
+}
+
+comm_datas get_comm_datas() {
+  return ret_datas;
 }
 
 char* get_coords_target() {
@@ -55,6 +60,25 @@ char* get_coords_target() {
   return NULL;
 }
 
+void record_data(char *buf) {
+  char *gps_begin = "$GPR";
+  char *srfl_begin = "$SRFL";
+  char *srfr_begin = "$SRFR";
+
+  if (!strncmp(gps_begin,buf,4)) {
+    strncpy(ret_datas.gps_string,buf_uav,sizeof(ret_datas.gps_string));
+  } else if (!strncmp(srfl_begin,buf,5)) {
+    ret_datas.srfl = atof(buf+6*sizeof(char));
+  } else if (!strncmp(srfr_begin,buf,5)) {
+    ret_datas.srfr = atof(buf+6*sizeof(char));
+  } else {
+    printf("ERROR NO STRING DETECTED\n");
+  }
+  //printf("GPS %s\n SRFL : %f\n SRFR : %f\n",ret_datas.gps_string,ret_datas.srfl,ret_datas.srfr);
+
+}
+
+
 char* get_coords_uav() {
   return NULL;
 }
@@ -79,11 +103,13 @@ int start_comm(void)
 	} while(msglen_uav<=0);
 	
 	printf("udp uav received\n");
-	do {
-	    msglen_target = udpserver_receive(&udp_target, buf_target, 512);	   
-	} while(msglen_target<=0);       
+
+	record_data(buf_uav);
+	/* do { */
+	/*     msglen_target = udpserver_receive(&udp_target, buf_target, 512);	    */
+	/* } while(msglen_target<=0);        */
 	
-	get_coords_target();
+	//get_coords_target();
     }
   
     udpserver_close(&udp_uav);

@@ -107,6 +107,10 @@ int is_landed(int ctrl_state) {
     return ret;
 }
 
+void recover_emergency() {
+  ardrone_tool_set_ui_pad_select(1);
+}
+
 /**
  * \fn char* print_state_string(int ctrl_state)
  * \param    
@@ -253,9 +257,9 @@ void null_state(input_state_pcmd_t *i){
  */
 
 C_RESULT take_off(void *arg) {
-    ardrone_tool_set_ui_pad_select(0);
-    ardrone_tool_set_ui_pad_start(1);
-    return C_OK;
+  ardrone_tool_set_ui_pad_select(0);
+  ardrone_tool_set_ui_pad_start(1);
+  return C_OK;
 }
 
 /**
