@@ -148,6 +148,43 @@ void avoid_obstacles() {
     datas = get_comm_datas();
     printf("SL %f\nSR %f\n",datas.srfl,datas.srfr);
     usleep(100000);
+    double dangerThreshold=30;
+	double currentAltitude;
+	double avoidanceAltitude;
+    if((datas.srfl > dangerThreshold) && (datas.srfr > dangerThreshold)){
+		//Path is clear
+		//Basic forward movement a control mvt law will be done in sprint 3
+		//CMD : Move Forward
+		if(datas.srfl + datas.srfl > 4*dangerThreshold){
+			fprintf(stderr,"[Drone move forward With speed]\n");
+		}else{
+			fprintf(stderr,"[Drone move forward with a small step]\n");
+		} 
+	}else{
+		//Path is Blocked
+		//CMD: Stop
+		fprintf(stderr,"[Drone Stop]\n");
+		if(datas.srfl < datas.srfr){
+			//Right is less obstructed
+			//CMD: Turn Right 
+			fprintf(stderr,"[Drone turn right]\n");
+		}else if (datas.srfr < datas.srfl){
+			//Left is less obstructed
+			//CMD: Turn Left
+			fprintf(stderr,"[Drone turn left]\n");
+		}else{
+			//If both are equally obstructed
+			//Memorise current Altitude 
+			currentAtitude= 0;//get_nav_datas_altitude();
+			//CMD: Go up
+			fprintf(stderr,"[Drone Go up ]\n");
+		}
+	
+	}
+
+
+
+
   }
 }
 
