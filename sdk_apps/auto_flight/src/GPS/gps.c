@@ -91,6 +91,28 @@ void extract_coord( char str_gps[], struct gps_coordinate *point )
     }
 }
 
+void extract_error(char *gpgga_string, gps_error *g_error) {
+  
+  char *delims = ",";
+  char *res;
+  res = strtok(gpgga_string, delims);
+  int i = 0;
+
+  while (i < 8) {
+    res = strtok(NULL, delims);
+
+    if (i == 6) {
+      g_error->sat_number = atoi(res);
+    }
+
+    if (i == 7) {
+      g_error->hdop = atof(res);
+    }
+
+    i++;
+  }
+  
+}
 
 
 
