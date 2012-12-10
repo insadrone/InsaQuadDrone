@@ -131,7 +131,7 @@ void extract_error(char *gpgga_string, gps_error *g_error) {
  * INPUT: 2 coordinates gps (struct gps_coordinate)                                                       
  * OUTPUT: distance(m) and angle(m) (double)                                                              
  */
-/*void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, double *distance, double *angle , struct gps_coordinate *error_gps)
+void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, double *distance, double *angle , struct gps_coordinate *error)
 {
   double y,x;
   if  (depart->latitude == -1.0 && depart->longitude == -1.0)
@@ -142,10 +142,17 @@ void extract_error(char *gpgga_string, gps_error *g_error) {
   else
     {
       // convert to radian                                                                             
-      depart->latitude = depart->latitude * M_PI/ 180.0;// + error_gps->latitude * M_PI/ 180.0;
-      depart->longitude = depart->longitude * M_PI/ 180.0 ;//+ error_gps->longitude * M_PI/ 180.0;
-      dest->latitude = dest->latitude * M_PI/ 180.0;	
-      dest->longitude = dest->longitude * M_PI/ 180.0;
+      if (!error) {//if error is null
+      	depart->latitude = depart->latitude * M_PI/ 180.0 ;
+      	depart->longitude = depart->longitude * M_PI/ 180.0 ;
+      	dest->latitude = dest->latitude * M_PI/ 180.0;	
+      	dest->longitude = dest->longitude * M_PI/ 180.0;
+      }
+      else	{ //                                                                            
+      	depart->latitude = depart->latitude * M_PI/ 180.0 + error->latitude * M_PI/ 180.0;
+      	depart->longitude = depart->longitude * M_PI/ 180.0 + error->longitude * M_PI/ 180.0;
+      	dest->latitude = dest->latitude * M_PI/ 180.0;	
+      	dest->longitude = dest->longitude * M_PI/ 180.0;}
       //==============//
       // calcul angle //
       //==============//
@@ -166,7 +173,7 @@ void extract_error(char *gpgga_string, gps_error *g_error) {
 
       printf("angle(degree) distance(m) %f %f \n", *angle , *distance);
     }
-}*/
+}
 
 
 /*
