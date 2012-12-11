@@ -24,7 +24,6 @@ void extract_error(char *gpgga_string, gps_error *g_error);
 
 void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, double *distance, double *angle , struct gps_coordinate *error_gps);
 
-
 /*
  *	Calculate average position of the target
  *

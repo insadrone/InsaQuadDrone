@@ -131,7 +131,7 @@ void extract_error(char *gpgga_string, gps_error *g_error) {
  * INPUT: 2 coordinates gps (struct gps_coordinate)                                                       
  * OUTPUT: distance(m) and angle(m) (double)                                                              
  */
-/*void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, double *distance, double *angle , struct gps_coordinate *error_gps)
+void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, double *distance, double *angle , struct gps_coordinate *error_gps)
 {
   double y,x;
   if  (depart->latitude == -1.0 && depart->longitude == -1.0)
@@ -166,7 +166,7 @@ void extract_error(char *gpgga_string, gps_error *g_error) {
 
       printf("angle(degree) distance(m) %f %f \n", *angle , *distance);
     }
-}*/
+}
 
 
 /*
