@@ -16,6 +16,19 @@ struct gps_coordinate average_pos_target;
 struct gps_coordinate variance_pos_target;
 	// variance of last SAMPLE_NB_AVERAGE target positions
 
+double pos_obstacle_left[OBS_NB_AVERAGE];
+	// array of last OBS_NB_AVERAGE position of target
+	// used to calculate its average position
+double pos_obstacle_right[OBS_NB_AVERAGE];
+	// array of last OBS_NB_AVERAGE position of target
+	// used to calculate its average position
+int position_array_pos_obstacle;
+	// Integer used to scan the array above (0< & <SAMPLE_NB_AVERAGE)
+double average_pos_obstacle_left;
+	// average position of obstacle
+double average_pos_obstacle_right;
+	// average position of obstacle
+
 
 int initialisation_gps(struct gps_coordinate *depart,struct gps_coordinate *dest, struct gps_coordinate *error)
 {
@@ -176,6 +189,9 @@ void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, doubl
 }
 
 
+/* ================================================================================================= */
+/* ================================================================================================= */
+
 /*
  *	Calculate average position of the target
  * if new coord > tolerance (~10-15m) data won't be take into account
@@ -299,6 +315,108 @@ int check_gps_coord_struc(struct gps_coordinate *check_me)
 }
 
 
+/* ================================================================================================= */
+/* ================================================================================================= */
+
+/*
+ *	Calculate average position of the obstacle
+ * if new pos > tolerance (~10-15m) data won't be take into account
+ *
+ * Input: double double, new left & right obstacle position 
+ * Output: double double, average of last X position of the obstacle (X defined in the .h file)
+ * Return: 1 upon success, -1 otherwise
+*/
+int average_obstacle_pos(double *left, double *right, double *average_left, double *average_right)
+{
+	int i = 0,j = 0;
+
+	// check if new position is valid
+	if((*left < 0) || (*right < 0))
+		return -1;
+
+	// check if an average has already been calculated
+	if((average_pos_obstacle_left < 0) || (average_pos_obstacle_right < 0))
+	{	// if no (array empty), easy
+		pos_obstacle_left[position_array_pos_obstacle] = *left;
+		pos_obstacle_right[position_array_pos_obstacle] = *right;
+
+		average_pos_obstacle_left = *left;
+		average_pos_obstacle_right = *right;
+	}
+	// else scan array and calculate average and variance
+	else
+	{
+		// add value to the array of positions if tolerance OK
+		if((*left < (average_pos_obstacle_left - SENSOR_TOLERANCE))
+			|| (*left > (average_pos_obstacle_left + SENSOR_TOLERANCE))
+			|| (*right < (average_pos_obstacle_right - SENSOR_TOLERANCE))
+			|| (*right > (average_pos_obstacle_right + SENSOR_TOLERANCE)))
+		{
+			return -1;
+		}
+		else 
+		{
+			pos_obstacle_left[position_array_pos_obstacle] = *left;
+			pos_obstacle_right[position_array_pos_obstacle] = *right;
+		}
+
+		// init variables for calulation
+		average_pos_obstacle_left = 0;
+		average_pos_obstacle_right = 0;
+
+		//scan array
+		for(i = 0; i < OBS_NB_AVERAGE; i++)
+		{	// calculate if values OK
+			if((pos_obstacle_left[i] > 0) && (pos_obstacle_right[i] > 0))
+			{
+				// Sum(Xi)
+				average_pos_obstacle_left += pos_obstacle_left[i];
+				average_pos_obstacle_right += pos_obstacle_right[i];
+				j++;
+			} // end if calcul with apporpriate values
+		} // end for scan array
+
+		// average = E(X) = Sum(Xi)/nb_sample
+		average_pos_obstacle_left = (average_pos_obstacle_left / j);
+		average_pos_obstacle_right = (average_pos_obstacle_right / j);
+
+	} // end else from if no average has already been calculated
+
+	// Update next position to write int he array (cyclic operating)
+	if(position_array_pos_obstacle == (OBS_NB_AVERAGE-1))
+		position_array_pos_obstacle = 0;
+	else
+		position_array_pos_obstacle++;
+
+	// write results in the output structure
+	*average_left = average_pos_obstacle_left;
+	*average_right = average_pos_obstacle_right;
+
+	return 1;	
+}
+
+
+
+/*
+ *	Init array of last X position of the obstacle
+ *
+ * Fill the array containing obstacle positions with values equal -1
+ * Has to be called once at the beggining of the program
+*/
+void init_array_obstacle_pos(void)
+{
+	for(position_array_pos_obstacle = 0; position_array_pos_obstacle < OBS_NB_AVERAGE; position_array_pos_obstacle++)
+	{
+		pos_obstacle_left[position_array_pos_obstacle] = -1;
+		pos_obstacle_right[position_array_pos_obstacle] = -1;
+	}
+	// init other variables
+	position_array_pos_obstacle = 0;
+	average_pos_obstacle_left = -1;
+	average_pos_obstacle_right = -1;
+}
+
+/* ================================================================================================= */
 /*	basic test for functions average_target_pos, init_array_target_pos and check_gps_coord_struc
 
 int main()
@@ -333,6 +451,53 @@ printf("\n\nresults : %f - %f - %f - %f\n", average_pos_target.latitude, average
 
 return 0;
 }*/
+
+
+
+//	basic test for functions average_target_obstacle, init_array_target_obstacle
+/*
+int main()
+{
+double *new_pos_left, *new_pos_right, *average_pos_l, *average_pos_r;
+new_pos_left = malloc(sizeof(double));
+average_pos_l = malloc(sizeof(double));
+new_pos_right = malloc(sizeof(double));
+average_pos_r = malloc(sizeof(double));
+
+*new_pos_left = 100;
+*new_pos_right = 50;
+
+printf("\ninit...\n");
+init_array_obstacle_pos();
+
+printf("\ncall 1\n");
+average_obstacle_pos(new_pos_left, new_pos_right, average_pos_l, average_pos_r);
+printf("\nresults : %f - %f\n", *average_pos_l, *average_pos_r);
+
+printf("\n\ncall 2\n");
+*new_pos_left = 101;
+*new_pos_right = 49;
+average_obstacle_pos(new_pos_left, new_pos_right, average_pos_l, average_pos_r);
+printf("\nresults : %f - %f\n", *average_pos_l, *average_pos_r);
+
+printf("\n\ncall 2\n");
+*new_pos_left = 200;
+*new_pos_right = 100;
+average_obstacle_pos(new_pos_left, new_pos_right, average_pos_l, average_pos_r);
+printf("\nresults : %f - %f\n", *average_pos_l, *average_pos_r);
+
+printf("\n\ncall 3\n");
+*new_pos_left = 101;
+*new_pos_right = 50;
+average_obstacle_pos(new_pos_left, new_pos_right, average_pos_l, average_pos_r);
+printf("\nresults : %f - %f\n", *average_pos_l, *average_pos_r);
+
+printf("\n\nresults : %f - %f\n",  *average_pos_l, *average_pos_r);
+
+return 0;
+}*/
+
+
 
 
 /* int main () */
