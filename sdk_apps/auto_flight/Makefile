@@ -30,7 +30,9 @@ GENERIC_BINARIES_COMMON_SOURCE_FILES+=			\
    Auto/auto.c \
    Comm/gps_comm.c \
    Comm/udp_server.c \
-   GPS/gps.c
+   GPS/gps.c \
+   Avoidance/avoidance.c
+
 
 GENERIC_INCLUDES+=					\
 	$(SRC_DIR) \

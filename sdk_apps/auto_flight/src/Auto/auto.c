@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 #include <ardrone_tool/Navdata/ardrone_general_navdata.h> 
 #include <ardrone_api.h>
@@ -141,62 +142,86 @@ void flight_demo() {
   }
 }
 
-    
-void avoid_obstacles() {
+void go_target() {
   comm_datas datas;
   while (1) {
     datas = get_comm_datas();
-    printf("SL %f\nSR %f\n",datas.srfl,datas.srfr);
-    usleep(100000);
-    double dangerThreshold=30;
-	double currentAltitude;
-	double avoidanceAltitude;
-    if((datas.srfl > dangerThreshold) && (datas.srfr > dangerThreshold)){
-		//Path is clear
-		//Basic forward movement a control mvt law will be done in sprint 3
-		//CMD : Move Forward
-		if(datas.srfl + datas.srfl > 4*dangerThreshold){
-			fprintf(stderr,"[Drone move forward With speed]\n");
-		}else{
-			fprintf(stderr,"[Drone move forward with a small step]\n");
-		} 
-	}else{
-		//Path is Blocked
-		//CMD: Stop
-		fprintf(stderr,"[Drone Stop]\n");
-		if(datas.srfl < datas.srfr){
-			//Right is less obstructed
-			//CMD: Turn Right 
-			fprintf(stderr,"[Drone turn right]\n");
-		}else if (datas.srfr < datas.srfl){
-			//Left is less obstructed
-			//CMD: Turn Left
-			fprintf(stderr,"[Drone turn left]\n");
-		}else{
-			//If both are equally obstructed
-			//Memorise current Altitude 
-			currentAtitude= 0;//get_nav_datas_altitude();
-			//CMD: Go up
-			fprintf(stderr,"[Drone Go up ]\n");
-		}
-	
-	}
-
-
-
-
   }
-}
-
-void go_target() {
-
-
-
 }
 
    
 DEFINE_THREAD_ROUTINE(auto_control, data) {
   
-  avoid_obstacles();
+  //avoid_obstacles();
+  //go_target();
+
+
+  int tag_config_ok = 0;
+  int landed = 0;
+  char c;
+    
+  while (1) {
+    if ((is_landed(sauv_ndata.ctrl_state_current) > 0) && sauv_ndata.bat_level_current > 0) {
+      if (!tag_config_ok) {
+	sleep(3);
+	printf("ok");
+	tag_configurate('b');
+	tag_config_ok = 1;
+      }
+    }
+    
+    if (sauv_ndata.tag_detected > 0) {
+
+      if (landed == 0){
+	send_order(take_off,NULL);
+	landed = 1;
+	//calibrate_magneto();
+      } else {
+	send_order(land,NULL);
+	sleep(1);
+	landed = 0;
+      }
+
+    }
+    if (landed == 1) {
+      //avoid_obstacles();
+      scanf("%c", &c);
+      printf("%c\n",c);
+      switch(c){
+      case 'f':
+	small_move(forward);
+	break;
+      case 'b':
+	small_move(backward);
+	break;
+      case 'u':
+	small_move(up);
+	break;
+      case 'd':
+	small_move(down);
+	break;
+      case 'l':
+	small_move(left);
+	break;
+      case 'r':
+	small_move(right);
+	break;
+      case 'w':
+	small_move(turn_left);
+	break;
+      case 'x':
+	small_move(turn_right);
+	break;
+      case '\n':
+	break;
+	default:
+	  landed = 0;
+	  small_move(land);
+      }
+      //printf("kikoo\n");
+    }    
+  }
+
+
   return (THREAD_RET) 0;
 }

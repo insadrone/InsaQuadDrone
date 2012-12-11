@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <sys/time.h>
 
 #include "udp_server.h"
 #include "gps_comm.h"
@@ -14,6 +15,8 @@ char buf_uav[512];
 char buf_target[512];
 
 int start_listen;
+
+int srf_received = 0;
 
 comm_datas ret_datas;
 
@@ -68,6 +71,7 @@ void record_data(char *buf) {
 
   if (!strncmp(gprmc_begin,buf,6)) {
     strncpy(ret_datas.gprmc_string,buf_uav,sizeof(ret_datas.gprmc_string));
+    printf("%s",ret_datas.gprmc_string);
   } else if (!strncmp(gpgga_begin,buf,6)) {
     strncpy(ret_datas.gpgga_string,buf_uav,sizeof(ret_datas.gpgga_string));
   } else if (!strncmp(srfl_begin,buf,5)) {
@@ -100,12 +104,12 @@ int start_comm(void)
     printf("start listen\n");
 
     while (start_listen) {
-      printf("listen\n");
+      //printf("listen\n");
 	do {
 	    msglen_uav = udpserver_receive(&udp_uav, buf_uav, 512);	   
 	} while(msglen_uav<=0);
 	
-	printf("udp uav received\n");
+	//printf("udp uav received\n");
 
 	record_data(buf_uav);
 	/* do { */

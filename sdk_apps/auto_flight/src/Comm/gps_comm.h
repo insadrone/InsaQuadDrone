@@ -11,6 +11,8 @@ typedef struct comm_datas_t {
   char gpgga_string[100];
 } comm_datas;
 
+//extern int srf_received;
+
 void init_comm();
 void stop_comm();
 comm_datas get_comm_datas();

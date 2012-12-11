@@ -25,6 +25,7 @@
 #include <Video/video_stage.h>
 #include "Auto/auto.h"
 #include "Comm/gps_comm.h"
+#include "Avoidance/avoidance.h"
 
 //Keyboard managment
 #include "Keyboard/keyboard.h"
@@ -49,6 +50,7 @@ C_RESULT ardrone_tool_init_custom(void)
   //START_THREAD( video_stage, NULL );
   START_THREAD( auto_control, NULL );
   START_THREAD( receive_gps, NULL );
+  START_THREAD( avoidance, NULL );
   
   return C_OK;
 }
@@ -61,6 +63,7 @@ C_RESULT ardrone_tool_shutdown_custom(void)
   //JOIN_THREAD( video_stage );
   JOIN_THREAD( auto_control );
   JOIN_THREAD( receive_gps );
+  JOIN_THREAD( avoidance );
 
   /* Unregistering for the current device */
   //ardrone_tool_input_remove( &gamepad );
@@ -87,5 +90,6 @@ BEGIN_THREAD_TABLE
   THREAD_TABLE_ENTRY( navdata_update, 20 )
   THREAD_TABLE_ENTRY( auto_control, 20 )
   THREAD_TABLE_ENTRY( receive_gps, 500 )
+  THREAD_TABLE_ENTRY( avoidance, 60 )
 END_THREAD_TABLE
 
