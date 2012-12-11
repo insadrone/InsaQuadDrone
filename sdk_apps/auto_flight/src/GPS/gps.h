@@ -4,7 +4,11 @@
 #include <math.h>
 
 #define SAMPLE_NB_AVERAGE 10	// number of sample used for average calculation of target postion
-#define TOLERANCE 15	// distance max that new position of target can be from its average position
+#define TOLERANCE 15.0/(30.9*3600.0)	// distance max that new position of target can be from its average position
+/*1 degree = 111.2km     1 minute = 1853m   1 second = 30.9m  => x (m) = x/(30.9 *3600) (degree) */
+
+#define SENSOR_TOLERANCE 1
+#define OBS_NB_AVERAGE 5
 
 struct gps_coordinate{
    double latitude; 
@@ -50,3 +54,22 @@ void init_array_target_pos(void);
  * Return: 1 upon success, -1 otherwise (=> struct null of values equal -1)
 */
 int check_gps_coord_struc(struct gps_coordinate *check_me);
+
+
+/*
+ *	Calculate average position of obstacle
+ *
+ * Input: double double, new left & right obstacle position 
+ * Output: double double, average of last X position of the obstacle
+ * Return: 1 upon success, -1 otherwise
+*/
+int average_obstacle_pos(double *left, double *right, double *average_left, double *average_right);
+
+
+/*
+ *	Init array of last X position of the obstacle
+ *
+ * Fill the array containing obstacle positions with values equal to -1
+ * Has to be called once at the beggining of the program
+*/
+void init_array_obstacle_pos(void);
