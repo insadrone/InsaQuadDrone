@@ -513,7 +513,7 @@ void tag_configurate( const char color) {
   
     /*detection on v_cam at 60fps*/
     printf("setting detection v_cam\n");
-    int32_t detectV = TAG_TYPE_MASK (TAG_TYPE_SHELL_TAG);
+    int32_t detectV = TAG_TYPE_MASK (TAG_TYPE_ROUNDEL);
     ARDRONE_TOOL_CONFIGURATION_ADDEVENT (detections_select_v, &detectV, ack);
     
 }
