@@ -221,6 +221,31 @@ C_RESULT send_order( C_RESULT (*function)(void*), void *arg) {
   
     return ret;
 }
+
+C_RESULT send_fast_order( C_RESULT (*function)(void*), void *arg) {
+
+    C_RESULT ret = C_FAIL;
+    int32_t usec = 0;
+
+    null_state(&drone_state);
+    ret = (*function)(arg);
+
+    /* Send the command to the drone */
+    if ( ret == C_OK ){
+	ardrone_tool_set_progressive_cmd( drone_state.flag,
+					  drone_state.phi,
+					  drone_state.theta,
+					  drone_state.gaz,
+					  drone_state.yaw,
+					  drone_state.psi,
+					  drone_state.psi_accuracy);
+	ret = C_OK;
+    } else {
+	printf("Fail send order\n");
+    }
+  
+    return ret;
+}
  
 /**
  * \fn void ack(int32_t success)
@@ -321,7 +346,7 @@ C_RESULT forward(void *arg) {
     if (arg != NULL){
 	theta = (float)((mov*)arg)->power / 10.0;
     }
-    //fprintf(stderr, "go forward with power = %f\n", theta);
+    fprintf(stderr, "go forward with power = %f\n", theta);
     drone_state.flag = 1;
     drone_state.theta = -theta;
     return C_OK;

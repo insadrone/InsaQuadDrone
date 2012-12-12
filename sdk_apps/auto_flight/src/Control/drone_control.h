@@ -31,6 +31,9 @@ char* print_state_string();
 void null_state(input_state_pcmd_t *);
 
 C_RESULT send_order( C_RESULT (*function)(void*), void* );
+
+C_RESULT send_fast_order( C_RESULT (*function)(void*), void* );
+
 C_RESULT small_move( C_RESULT (*function)(void*) );
 
 /*functions supported by the above function*/

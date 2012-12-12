@@ -12,12 +12,18 @@ typedef struct f_data_t {
   int ctrl_state_current;
   //nb de tag detectes
   int tag_detected;
+  // hauteur
+  float alt;
   //tableau des tags
   uint32_t const *tag_tab;
 
 } fdata;
 
 PROTO_THREAD_ROUTINE(auto_control, data);
+
+extern int auto_ready;
+
+float get_alt();
 
 inline C_RESULT auto_navdata_client_init( void* data );
 inline C_RESULT auto_navdata_client_process( const navdata_unpacked_t* const navdata );
