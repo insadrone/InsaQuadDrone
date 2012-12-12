@@ -12,7 +12,7 @@
 #include "auto.h"
 #include "../Comm/gps_comm.h"
 #include "../Control/drone_control.h"
-#include "../GPS/gps.h"
+
 fdata sauv_ndata;
 
 /* Initialization local variables before event loop  */
@@ -149,8 +149,9 @@ void go_target() {
   int mission = 0;
   comm_datas datas;
   comm_datas_target datas_target;
-  struct gps_coordinate dest, depart, relatif_error;
-  gps_error error_dest, error_depart;
+  struct gps_coordinate depart;
+  struct gps_coordinate relatif_error;
+  //gps_error error_dest, error_depart;
   double distance,angle;
   while (1) {
   	
@@ -176,7 +177,7 @@ void go_target() {
 	landed = 0;
       }
 	  
-      if ( (landed == 1) && (calibration == 0) ){
+	  if ( (landed == 1) && (calibration == 0) ){
 		sleep(5);
 		printf("start calibration\n");
 		calibrate_magneto(NULL);
@@ -187,13 +188,13 @@ void go_target() {
       if ( (landed == 1) && (calibration == 1) && (mission = 0) ) {	  
 		datas = get_comm_datas();	
 		extract_coord(datas.gprmc_string,&depart);
-		extract_error(datas.gpgga_string,&error_depart);
+		//extract_error(datas.gpgga_string,&error_depart);
 	
 		datas_target = get_comm_datas_target();
-		extract_coord(datas_target.gprmc_string,&dest);
-		extract_error(datas_target.gpgga_string,&error_dest);			
+		//extract_coord(datas_target.gprmc_string,&dest);
+		//extract_error(datas_target.gpgga_string,&error_dest);			
 	
-		navigation(&depart, &dest, &distance, &angle, NULL); //&relatif_error
+		navigation(&depart, &datas_target.dest, &distance, &angle, NULL); //&relatif_error
 	
 		turn_angle2(angle ,5.0);
 	
