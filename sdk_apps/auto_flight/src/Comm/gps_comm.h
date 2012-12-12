@@ -2,8 +2,7 @@
 #define GPS_COMM_H
 
 #include <VP_Api/vp_api_thread_helper.h>
-
-
+#include "../GPS/gps.h"
 typedef struct comm_datas_t {
   double srfl;
   double srfr;
@@ -13,7 +12,9 @@ typedef struct comm_datas_t {
 
 typedef struct comm_datas_t_target {
   char gprmc_string[100];
+  struct gps_coordinate dest;
   char gpgga_string[100];
+  gps_error error;
 } comm_datas_target;
 
 //extern int srf_received;
