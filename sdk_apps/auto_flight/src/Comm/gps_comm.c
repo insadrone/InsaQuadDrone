@@ -6,7 +6,7 @@
 
 #include "udp_server.h"
 #include "gps_comm.h"
-#include "../GPS/gps.h"
+//#include "../GPS/gps.h"
 
 #define UDP_UAV 6444
 #define UDP_TARGET 6445
@@ -92,13 +92,19 @@ void record_data(char *buf) {
 void record_data_target(char *buf) {
   char *gprmc_begin = "$GPRMC";
   char *gpgga_begin = "$GPGGA";
-
+  struct gps_coordinate dest;
 
   if (!strncmp(gprmc_begin,buf,6)) {
     strncpy(ret_datas_target.gprmc_string,buf_target,sizeof(ret_datas_target.gprmc_string));
     printf("%s",ret_datas_target.gprmc_string);
+	extract_coord(ret_datas_target.gprmc_string,&dest);
+	average_target_pos(&dest, &ret_datas_target.dest);
+	
   } else if (!strncmp(gpgga_begin,buf,6)) {
     strncpy(ret_datas_target.gpgga_string,buf_target,sizeof(ret_datas_target.gpgga_string));
+	printf("%s",ret_datas_target.gpgga_string);
+	//extract_error(datas_target.gpgga_string,&(datas_target.error));
+	
   } else {
     printf("ERROR NO STRING TARGET DETECTED\n");
   }
