@@ -12,7 +12,7 @@
 #include "auto.h"
 #include "../Comm/gps_comm.h"
 #include "../Control/drone_control.h"
-
+#include "../GPS/gps.h"
 fdata sauv_ndata;
 
 /* Initialization local variables before event loop  */
@@ -143,10 +143,70 @@ void flight_demo() {
 }
 
 void go_target() {
+  int tag_config_ok = 0;
+  int landed = 0;
+  int calibration = 0;
+  int mission = 0;
   comm_datas datas;
+  comm_datas_target datas_target;
+  struct gps_coordinate dest, depart, relatif_error;
+  gps_error error_dest, error_depart;
+  double distance,angle;
   while (1) {
-    datas = get_comm_datas();
-  }
+  	
+	//check state of uav and battery level
+    if ((is_landed(sauv_ndata.ctrl_state_current) > 0) && sauv_ndata.bat_level_current > 0) {
+      if (!tag_config_ok) {
+	sleep(3);
+	printf("ok");
+	tag_configurate('b');
+	tag_config_ok = 1;
+      }
+    }
+    //tag detection
+    if (sauv_ndata.tag_detected > 0) {
+
+      if (landed == 0){
+	send_order(take_off,NULL);
+	landed = 1;
+	//calibrate_magneto();
+      } else {
+	send_order(land,NULL);
+	sleep(1);
+	landed = 0;
+      }
+	  
+      if ( (landed == 1) && (calibration == 0) ){
+		sleep(5);
+		printf("start calibration\n");
+		calibrate_magneto(NULL);
+		sleep(4);
+		calibration = 1;
+	  }
+      
+      if ( (landed == 1) && (calibration == 1) && (mission = 0) ) {	  
+		datas = get_comm_datas();	
+		extract_coord(datas.gprmc_string,&depart);
+		extract_error(datas.gpgga_string,&error_depart);
+	
+		datas_target = get_comm_datas_target();
+		extract_coord(datas_target.gprmc_string,&dest);
+		extract_error(datas_target.gpgga_string,&error_dest);			
+	
+		navigation(&depart, &dest, &distance, &angle, NULL); //&relatif_error
+	
+		turn_angle2(angle ,5.0);
+	
+		sleep(1);
+		if (distance > 4.0){
+			send_order(forward,NULL);
+			sleep(3);
+		} else { send_order(land,NULL);
+				mission = 1;}
+		
+	  }
+	}//if (sauv_ndata.tag_detected
+  }//while
 }
 
    
@@ -225,3 +285,4 @@ DEFINE_THREAD_ROUTINE(auto_control, data) {
 
   return (THREAD_RET) 0;
 }
+
