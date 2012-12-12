@@ -19,7 +19,7 @@ int start_listen;
 int srf_received = 0;
 
 comm_datas ret_datas;
-
+comm_datas_target ret_datas_target;
 void diep(const char *s)
 {
     perror(s);
@@ -38,6 +38,10 @@ void stop_comm() {
 
 comm_datas get_comm_datas() {
   return ret_datas;
+}
+
+comm_datas_target get_comm_datas_target() {
+  return ret_datas_target;
 }
 
 char* get_coords_target() {
@@ -85,6 +89,22 @@ void record_data(char *buf) {
 
 }
 
+void record_data_target(char *buf) {
+  char *gprmc_begin = "$GPRMC";
+  char *gpgga_begin = "$GPGGA";
+
+
+  if (!strncmp(gprmc_begin,buf,6)) {
+    strncpy(ret_datas_target.gprmc_string,buf_target,sizeof(ret_datas_target.gprmc_string));
+    printf("%s",ret_datas_target.gprmc_string);
+  } else if (!strncmp(gpgga_begin,buf,6)) {
+    strncpy(ret_datas_target.gpgga_string,buf_target,sizeof(ret_datas_target.gpgga_string));
+  } else {
+    printf("ERROR NO STRING TARGET DETECTED\n");
+  }
+  //printf("GPRMC:\n%s\n  GPGGA:\n%s\n ",ret_datas_target.gprmc_string,ret_datas_target.gpgga_string );
+
+}
 
 char* get_coords_uav() {
   return NULL;
@@ -112,10 +132,12 @@ int start_comm(void)
 	//printf("udp uav received\n");
 
 	record_data(buf_uav);
-	/* do { */
-	/*     msglen_target = udpserver_receive(&udp_target, buf_target, 512);	    */
-	/* } while(msglen_target<=0);        */
 	
+	do {
+	    msglen_target = udpserver_receive(&udp_target, buf_target, 512);	   
+	} while(msglen_target<=0);       
+	
+	record_data_target(buf_target);
 	//get_coords_target();
     }
   
