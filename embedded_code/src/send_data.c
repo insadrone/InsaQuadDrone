@@ -31,10 +31,10 @@ int main(void)
     while (1) {       /* loop for input */
       res = read(*fd,tty_buf,255);   /* returns after 5 chars have been input */
       tty_buf[res]=0;               /* so we can printf... */
-      printf("envoi de : %s", tty_buf);
+      printf("%s", tty_buf);
       msglen=sprintf(udp_buf, tty_buf) + 1;
-      if (udpclient_send(&udp, udp_buf, msglen)) diep("send");
-      usleep(10);
+      udpclient_send(&udp, udp_buf, msglen);
+      //usleep(50000);
     }
     
     close_term(fd);

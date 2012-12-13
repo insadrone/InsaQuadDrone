@@ -15,6 +15,7 @@
 
 fdata sauv_ndata;
 int auto_ready = 0;
+FILE *redir_sortie = NULL;
 
 /* Initialization local variables before event loop  */
 inline C_RESULT auto_navdata_client_init( void* data )
@@ -34,7 +35,7 @@ inline C_RESULT auto_navdata_client_process( const navdata_unpacked_t* const nav
   sauv_ndata.ctrl_state_current = nd->ctrl_state;
   sauv_ndata.tag_detected = nv->nb_detected;
   sauv_ndata.tag_tab = nv->camera_source;
-  sauv_ndata.alt = nd->altitude / 1000;
+  sauv_ndata.alt = nd->altitude / 1000.0;
   
   //printf("alt %f\n",sauv_ndata.alt);
   //printf("angle %f\n",sauv_ndata.psi_current);
@@ -268,6 +269,8 @@ DEFINE_THREAD_ROUTINE(auto_control, data) {
   
   //avoid_obstacles();
   //go_target();
+
+  redir_sortie = fopen("lol","a+");
 
   control();
 

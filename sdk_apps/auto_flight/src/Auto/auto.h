@@ -22,6 +22,7 @@ typedef struct f_data_t {
 PROTO_THREAD_ROUTINE(auto_control, data);
 
 extern int auto_ready;
+extern FILE *redir_sortie;
 
 float get_alt();
 

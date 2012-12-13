@@ -139,11 +139,11 @@ int start_comm(void)
 
 	record_data(buf_uav);
 	
-	do {
-	    msglen_target = udpserver_receive(&udp_target, buf_target, 512);	   
-	} while(msglen_target<=0);       
+	/* do { */
+	/*     msglen_target = udpserver_receive(&udp_target, buf_target, 512);	    */
+	/* } while(msglen_target<=0);        */
 	
-	record_data_target(buf_target);
+	/* record_data_target(buf_target); */
 	//get_coords_target();
     }
   

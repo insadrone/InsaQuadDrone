@@ -10,6 +10,8 @@
 #include "../Comm/gps_comm.h"
 #include "../Control/drone_control.h"
 
+int going_up = 0;
+
 void go_up_threshold(float thresh) {
   float alt = get_alt();
   mov speed;
@@ -42,8 +44,7 @@ void avoid_obstacles(float thresh) {
   
   datas = get_comm_datas();
   
-  double dangerThreshold=200;
-  int going_up = 0;
+  double dangerThreshold=150;
 
   mov speed;
 
@@ -54,6 +55,14 @@ void avoid_obstacles(float thresh) {
     //Basic forward movement a control mvt law will be done in sprint 3
     //CMD : Move Forward
 
+    if (going_up) {
+      speed.power = 1;
+      send_fast_order(forward,(void *)&speed);      
+      sleep(2);
+      go_down_threshold(thresh);
+      going_up = 0;
+    }
+
     if (/*datas.srfl + */datas.srfr > 2*dangerThreshold) {
       fprintf(stderr,"[Drone move forward With speed]\n");
       speed.power = 1;
@@ -63,10 +72,7 @@ void avoid_obstacles(float thresh) {
       send_fast_order(forward,(void *)&speed);
       fprintf(stderr,"[Drone move forward with a small step]\n");
     }
-    if (going_up) {
-      go_down_threshold(thresh);
-      going_up = 0;
-    }
+
   } else {
     //Path is Blocked
       //CMD: Stop
@@ -112,7 +118,7 @@ DEFINE_THREAD_ROUTINE(avoidance, data) {
   while (1) {
     if (auto_ready) {
       printf("thread auto lauched\n");
-      go_up_threshold(thresh);
+      //go_up_threshold(thresh);
       printf("SEUIL ATTEINT\n");
       avoid_obstacles(thresh);
       usleep(100000);
