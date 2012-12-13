@@ -54,7 +54,7 @@ void avoid_obstacles(float thresh) {
     //Basic forward movement a control mvt law will be done in sprint 3
     //CMD : Move Forward
 
-    if (/*datas.srfl + */datas.srfr > 2*dangerThreshold) {
+    if (datas.srfr > 2*dangerThreshold) {
       fprintf(stderr,"[Drone move forward With speed]\n");
       speed.power = 1;
       send_fast_order(forward,(void *)&speed);      
@@ -68,39 +68,10 @@ void avoid_obstacles(float thresh) {
       going_up = 0;
     }
   } else {
-    //Path is Blocked
-      //CMD: Stop
-    /* fprintf(stderr,"[Drone Stop]\n"); */
-    /* small_move(stop); */
-    /* if(datas.srfl > dangerThreshold) { */
-    /*   //Right is less obstructed */
-    /*   //CMD: Turn Right */
-    /*   /\* fprintf(stderr,"[Drone turn left]\n"); *\/ */
-    /*   /\* small_move(turn_left); *\/ */
-
-    /*   speed.power = 1; */
-    /*   send_fast_order(forward,(void *)&speed); */
-
-
-    /* } else */
-    /* if (datas.srfr > dangerThreshold) { */
-    /*   //Left is less obstructed */
-    /*   //CMD: Turn Left */
-    /*   /\* fprintf(stderr,"[Drone turn right]\n"); *\/ */
-    /*   /\* small_move(turn_right); *\/ */
-
-    /*   speed.power = 1; */
-    /*   send_fast_order(forward,(void *)&speed); */
-    /* } else { */
-      //If both are equally obstructed
-      //Memorise current Altitude
-    //get_nav_datas_altitude();
-      //CMD: Go up
       fprintf(stderr,"[Drone Go up ]\n");
       speed.power = 4;
       send_fast_order(up,(void *)&speed);
       going_up = 1;
-      //}
   } 
 }
  
