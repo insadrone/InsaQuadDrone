@@ -21,7 +21,9 @@ typedef struct f_data_t {
 
 PROTO_THREAD_ROUTINE(auto_control, data);
 
+extern fdata sauv_ndata;
 extern int auto_ready;
+extern int target_ready;
 
 float get_alt();
 
