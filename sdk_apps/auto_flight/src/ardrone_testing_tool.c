@@ -89,7 +89,7 @@ BEGIN_THREAD_TABLE
   THREAD_TABLE_ENTRY( ardrone_control, 2 )
   THREAD_TABLE_ENTRY( navdata_update, 20 )
   THREAD_TABLE_ENTRY( auto_control, 20 )
-  THREAD_TABLE_ENTRY( receive_gps, 500 )
+  THREAD_TABLE_ENTRY( receive_gps, 50 )
   THREAD_TABLE_ENTRY( avoidance, 60 )
 END_THREAD_TABLE
 
