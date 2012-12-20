@@ -56,33 +56,14 @@ void go_target() {
   while (1) {
   	
     //check state of uav and battery level
-    if ((is_landed(sauv_ndata.ctrl_state_current) > 0) && sauv_ndata.bat_level_current > 0) {
-      if (!tag_config_ok) {
-	sleep(3);
-	printf("ok");
-	tag_configurate('b');
-	tag_config_ok = 1;
-      }
-    }
-    //tag detection
-    if (sauv_ndata.tag_detected > 0) {
-
-      if (landed == 0){
-	send_order(take_off,NULL);
-	landed = 1;
-	//calibrate_magneto();
-      } else {
-	send_order(land,NULL);
-	sleep(1);
-	landed = 0;
-      }
-	  
+      
       if ( (landed == 1) && (calibration == 0) ){
 	sleep(5);
 	printf("start calibration\n");
 	calibrate_magneto(NULL);
 	sleep(4);
 	calibration = 1;
+	printf("Calibration done\n");
       }
       
       if ( (landed == 1) && (calibration == 1) && (mission = 0) ) {	  
@@ -97,17 +78,18 @@ void go_target() {
 	navigation(&depart, &datas_target.dest, &distance, &angle, NULL); //&relatif_error
 		
 	turn_angle2(angle ,5.0);
+	printf("turn angle %d, &angle");
 		
 	sleep(1);
 	if (distance > 4.0){
 	  send_order(forward,NULL);
+	  printf("FORWARD  \n");
 	  sleep(3);
-	} else { send_order(land,NULL);
+	} else { send_order(land,NULL); printf("LANDING \n");
 	  mission = 1;}
 		
       }
-    }//if (sauv_ndata.tag_detected
-  }//while
+    }//while
 }
 
    
