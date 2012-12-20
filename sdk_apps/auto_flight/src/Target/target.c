@@ -43,17 +43,15 @@ void turn_angle2(float target_angle, float tol) {
 }
 
 void go_target() {
-  int tag_config_ok = 0;
-  int landed = 0;
-  int calibration = 0;
-  int mission = 0;
+  static int landed = 0;
+  static int calibration = 0;
+  static int mission = 0;
   comm_datas datas;
   comm_datas_target datas_target;
   struct gps_coordinate depart;
   //struct gps_coordinate relatif_error;
   //gps_error error_dest, error_depart;
-  double distance,angle;
-  while (1) {
+  static double distance,angle;
   	
     //check state of uav and battery level
       
@@ -78,7 +76,7 @@ void go_target() {
 	navigation(&depart, &datas_target.dest, &distance, &angle, NULL); //&relatif_error
 		
 	turn_angle2(angle ,5.0);
-	printf("turn angle %d, &angle");
+	printf("turn angle %f, &angle");
 		
 	sleep(1);
 	if (distance > 4.0){
@@ -87,9 +85,8 @@ void go_target() {
 	  sleep(3);
 	} else { send_order(land,NULL); printf("LANDING \n");
 	  mission = 1;}
-		
+	
       }
-    }//while
 }
 
    
@@ -99,9 +96,9 @@ DEFINE_THREAD_ROUTINE(target, data) {
     if (target_ready) {
       printf("GO Target launched !\n");
       go_target();
-      usleep(10000);
+      usleep(100);
     }
-    usleep(10000);
+    usleep(100);
   }
 
   return (THREAD_RET) 0;
