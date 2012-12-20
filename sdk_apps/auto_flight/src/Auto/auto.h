@@ -22,9 +22,11 @@ typedef struct f_data_t {
 PROTO_THREAD_ROUTINE(auto_control, data);
 
 extern int auto_ready;
+extern int target_ready;
 extern FILE *redir_sortie;
 
 float get_alt();
+fdata get_ndata();
 
 inline C_RESULT auto_navdata_client_init( void* data );
 inline C_RESULT auto_navdata_client_process( const navdata_unpacked_t* const navdata );

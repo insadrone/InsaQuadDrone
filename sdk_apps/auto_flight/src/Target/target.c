@@ -9,11 +9,13 @@
 
 #include "../Auto/auto.h"
 #include "../Comm/gps_comm.h"
+#include "../Comm_target/target_comm.h"
 #include "../Control/drone_control.h"
 
 
 void turn_angle2(float target_angle, float tol) {
 
+  fdata sauv_ndata = get_ndata();
   float angle_360 = sauv_ndata.psi_current;
   float angle_inf, angle_sup;
 
@@ -76,7 +78,7 @@ void go_target() {
 	navigation(&depart, &datas_target.dest, &distance, &angle, NULL); //&relatif_error
 		
 	turn_angle2(angle ,5.0);
-	printf("turn angle %f, &angle");
+	printf("turn angle %f, &angle",angle);
 		
 	sleep(1);
 	if (distance > 4.0){
@@ -94,7 +96,7 @@ DEFINE_THREAD_ROUTINE(target, data) {
 
   while (1) {
     if (target_ready) {
-      printf("GO Target launched !\n");
+      //printf("GO Target launched !\n");
       go_target();
       usleep(100);
     }

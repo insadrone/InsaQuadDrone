@@ -32,7 +32,8 @@ GENERIC_BINARIES_COMMON_SOURCE_FILES+=			\
    Comm/udp_server.c \
    GPS/gps.c \
    Avoidance/avoidance.c \
-   Target/target.c
+   Comm_target/target_comm.c \
+   Target/target.c 
 
 
 GENERIC_INCLUDES+=					\

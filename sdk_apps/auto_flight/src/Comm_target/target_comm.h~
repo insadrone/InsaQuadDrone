@@ -10,12 +10,23 @@ typedef struct comm_datas_t {
   char gpgga_string[100];
 } comm_datas;
 
+typedef struct comm_datas_t_target {
+  char gprmc_string[100];
+  struct gps_coordinate dest;
+  char gpgga_string[100];
+  gps_error error;
+} comm_datas_target;
+
 //extern int srf_received;
 
 void init_comm();
 void stop_comm();
 comm_datas get_comm_datas();
+comm_datas_target get_comm_datas_target();
 int record_data(char *buf);
+void record_data_target(char *buf);
+char* get_coords_target();
+char* get_coords_uav();
 int start_comm(void);
 
 
