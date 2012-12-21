@@ -488,7 +488,7 @@ void init_array_obstacle_pos(void)
 
 void init_array_obstacle_pos2(void)
 {
-	for(position_array_pos_obstacle2 = 0; position_array_pos_obstacle2 < OBS_NB_AVERAGE; ++position_array_pos_obstacle2)
+	for(position_array_pos_obstacle2 = 0; position_array_pos_obstacle2 < OBS_NB_AVERAGE; position_array_pos_obstacle2++)
 	{
 		pos_obstacle_left2[position_array_pos_obstacle2] = -1;
 	}
