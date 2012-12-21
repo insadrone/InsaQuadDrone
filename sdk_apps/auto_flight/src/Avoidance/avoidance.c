@@ -9,8 +9,10 @@
 #include "../Auto/auto.h"
 #include "../Comm/gps_comm.h"
 #include "../Control/drone_control.h"
+#include "../STMachine/IAvoid.h"
 
-int going_up = 0;
+inC_IAvoid input;
+outC_IAvoid output;
 
 void go_up_threshold(float thresh) {
   float alt = get_alt();
@@ -39,117 +41,63 @@ void go_down_threshold(float thresh) {
   fprintf(redir_sortie,"REACH %f going DOWN\n",alt);
 }
     
-void avoid_obstacles(float thresh) {
-  comm_datas datas;
-  
-  datas = get_comm_datas();
-  
-  double dangerThreshold=100;
 
+void command(outC_IAvoid comm) {
   mov speed;
-  static struct timeval tv1,tv2;
-  struct timezone tz;
-  long long diff;
-  static float last = 0.0;
 
-  if (abs(last - datas.srfr) > 1.0) {
-    gettimeofday(&tv2, &tz);
-    diff=(tv2.tv_sec-tv1.tv_sec) * 1000000L +	\
-      (tv2.tv_usec-tv1.tv_usec);  
-    //  fprintf(redir_sortie,"durée=%d usec\n",diff);
-  //  printf("ALT %f\n",get_alt());
-    fprintf(redir_sortie,"SRFR : %f\n",datas.srfr);
-    fflush(redir_sortie);
+  if (comm.up) {
+    speed.power = 6;
+    send_fast_order(up,(void *)&speed);
+  } else if (comm.down) {
+    speed.power = 3;
+    send_fast_order(down,(void *)&speed);
+  } else if (comm.stop) {
+    small_move(stop);
+  } else if (comm.auto1) {
+    speed.power = 1;
+    printf("avance\n");
+    send_fast_order(forward,(void *)&speed);
+  } else if (comm.forward) {
+    speed.power = 1;
+    printf("avance\n");
+    send_fast_order(forward,(void *)&speed);
   }
-  gettimeofday(&tv1, &tz);
-  last = datas.srfr;
 
-  if (/*(datas.srfl > dangerThreshold) && */(datas.srfr > dangerThreshold)) {
-    //Path is clear
-    //Basic forward movement a control mvt law will be done in sprint 3
-    //CMD : Move Forward
-
-    if (going_up) {
-      speed.power = 1;
-      send_fast_order(forward,(void *)&speed);
-      sleep(2);
-      //go_down_threshold(thresh);
-      small_move(down);
-      printf("go down\n");
-      going_up = 0;
-    }
-
-    if (/*datas.srfl + */datas.srfr > 2*dangerThreshold) {
-      fprintf(redir_sortie,"[Drone move forward With speed]\n");
-      speed.power = 1;
-      send_fast_order(forward,(void *)&speed);      
-    } else {
-      speed.power = 1;
-      send_fast_order(forward,(void *)&speed);
-      fprintf(redir_sortie,"[Drone move forward with a small step]\n");
-    }
-
-  }  else {
-    /* //Path is Blocked */
-    /*   //CMD: Stop */
-    /* /\* fprintf(redir_sortie,"[Drone Stop]\n"); *\/ */
-    /* /\* small_move(stop); *\/ */
-    /* /\* if(datas.srfl > dangerThreshold) { *\/ */
-    /* /\*   //Right is less obstructed *\/ */
-    /* /\*   //CMD: Turn Right *\/ */
-    /* /\*   /\\* fprintf(redir_sortie,"[Drone turn left]\n"); *\\/ *\/ */
-    /* /\*   /\\* small_move(turn_left); *\\/ *\/ */
-
-    /* /\*   speed.power = 1; *\/ */
-    /* /\*   send_fast_order(forward,(void *)&speed); *\/ */
-
-
-    /* /\* } else *\/ */
-    /* /\* if (datas.srfr > dangerThreshold) { *\/ */
-    /* /\*   //Left is less obstructed *\/ */
-    /* /\*   //CMD: Turn Left *\/ */
-    /* /\*   /\\* fprintf(redir_sortie,"[Drone turn right]\n"); *\\/ *\/ */
-    /* /\*   /\\* small_move(turn_right); *\\/ *\/ */
-
-    /* /\*   speed.power = 1; *\/ */
-    /* /\*   send_fast_order(forward,(void *)&speed); *\/ */
-    /* /\* } else { *\/ */
-    /*   //If both are equally obstructed */
-    /*   //Memorise current Altitude */
-    /* //get_nav_datas_altitude(); */
-    /*   //CMD: Go up */
-  
-  /* fprintf(redir_sortie,"[Drone Stop 1]\n"); */
-  /* fprintf(redir_sortie,"[Drone Stop 2]\n"); */
-  /* fprintf(redir_sortie,"[Drone Stop 3]\n"); */
-  /* small_move(stop); */
-  /* sleep(4); */
-  //speed.power = 6;
-  
-    //  small_move(stop); 
-  sleep(1);
-  fprintf(redir_sortie,"[Drone Go up ]\n");
-  speed.power = 8;
-  send_fast_order(up,(void *)&speed);
-  going_up = 1;
-  }
 }
- 
   
 DEFINE_THREAD_ROUTINE(avoidance, data) {
+  
+  comm_datas datas;
+  double dangerThreshold=100;
+  int detection;
 
-  float thresh = 0.5;
+  IAvoid_reset(&output);
+  input.obstacle_detected = 0;
+  input.latence1 = 100;
+  input.latence2 = 100;
+  input.latence3 = 100;
+  input.latence4 = 100;
 
-  while (1) {
-    if (auto_ready) {
-      //printf("thread auto lauched\n");
-      //go_up_threshold(thresh);
-      //printf("SEUIL ATTEINT\n");
-      avoid_obstacles(thresh);
-      usleep(10);
-    }
-    usleep(10);
-  }
-
+ while (1) {
+   printf("in auto1\n");
+   if (auto_ready) {
+     //get srf datas
+     printf("in auto2\n");
+     datas = get_comm_datas();
+     //check threshold
+     if (datas.srfr > dangerThreshold) {
+       detection = 1;
+     } else {
+       detection = 0;
+     } 
+   
+     input.obstacle_detected = detection;     
+     IAvoid(&input,&output);
+     command(output);
+     usleep(10000);    
+   }
+   //   usleep(100);
+ }
+ 
   return (THREAD_RET) 0;
 }

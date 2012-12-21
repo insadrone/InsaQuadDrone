@@ -20,9 +20,9 @@ int main() {
   int rc = 0, cycle = 0;
   IAvoid_reset(&output);
   input.obstacle_detected = 0;
-  input.latence1 = 5;
-  input.latence2 = 5;
-  input.latence3 = 5;
+  input.latence1 = 2;
+  input.latence2 = 3;
+  input.latence3 = 4;
   input.latence4 = 5;
     
   while (1) {

@@ -71,7 +71,7 @@ int record_data(char *buf) {
 
   if (!strncmp(gprmc_begin,buf,6)) {
     strncpy(ret_datas.gprmc_string,buf_uav,sizeof(ret_datas.gprmc_string));
-    printf("UAV%s",ret_datas.gprmc_string);
+    //    printf("UAV%s",ret_datas.gprmc_string);
     ret_val = 1;
   } else if (!strncmp(gpgga_begin,buf,6)) {
     strncpy(ret_datas.gpgga_string,buf_uav,sizeof(ret_datas.gpgga_string));
@@ -79,7 +79,7 @@ int record_data(char *buf) {
     ret_datas.srfl = atof(buf+6*sizeof(char));
   } else if (!strncmp(srfr_begin,buf,5)) {
     ret_datas.srfr = atof(buf+6*sizeof(char));
-    printf("SRF%f\n",ret_datas.srfr);
+    //printf("SRF%f\n",ret_datas.srfr);
   } else {
     printf("ERROR NO STRING DETECTED\n");
   }

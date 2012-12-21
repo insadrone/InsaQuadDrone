@@ -93,6 +93,7 @@ void control() {
       break;
     case 'a':
       auto_ready = 1;
+      printf("avoidance launched\n");
       //small_move(turn_left);
       break;
     case 'x':

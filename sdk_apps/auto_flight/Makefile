@@ -33,8 +33,8 @@ GENERIC_BINARIES_COMMON_SOURCE_FILES+=			\
    GPS/gps.c \
    Avoidance/avoidance.c \
    Comm_target/target_comm.c \
-   Target/target.c 
-
+   Target/target.c \
+   STMachine/IAvoid.c
 
 GENERIC_INCLUDES+=					\
 	$(SRC_DIR) \
