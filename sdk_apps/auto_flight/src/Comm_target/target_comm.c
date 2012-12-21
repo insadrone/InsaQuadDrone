@@ -21,15 +21,15 @@ void record_data_target(char *buf) {
 
   if (!strncmp(gprmc_begin,buf,6)) {
     strncpy(ret_datas_target.gprmc_string,buf_target,sizeof(ret_datas_target.gprmc_string));
-    printf("TARGET%s",ret_datas_target.gprmc_string);
-	extract_coord(ret_datas_target.gprmc_string,&dest);
-	average_target_pos(&dest, &ret_datas_target.dest);
-	
+    printf("TARGET%s",ret_datas_target.gprmc_string);    
+    extract_coord(ret_datas_target.gprmc_string,&dest);
+    average_target_pos(&dest, &ret_datas_target.dest);
+    
   } else if (!strncmp(gpgga_begin,buf,6)) {
     strncpy(ret_datas_target.gpgga_string,buf_target,sizeof(ret_datas_target.gpgga_string));
-	printf("%s",ret_datas_target.gpgga_string);
-	//extract_error(datas_target.gpgga_string,&(datas_target.error));
-	
+    printf("%s",ret_datas_target.gpgga_string);
+    //extract_error(datas_target.gpgga_string,&(datas_target.error));
+    
   } else {
     //printf("ERROR NO STRING TARGET DETECTED\n");
   }
