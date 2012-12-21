@@ -7,8 +7,8 @@
 #define TOLERANCE 15.0/(30.9*3600.0)	// distance max that new position of target can be from its average position
 /*1 degree = 111.2km     1 minute = 1853m   1 second = 30.9m  => x (m) = x/(30.9 *3600) (degree) */
 
-#define SENSOR_TOLERANCE 10
-#define OBS_NB_AVERAGE 3
+#define SENSOR_TOLERANCE 1000
+#define OBS_NB_AVERAGE 5
 
 struct gps_coordinate{
    double latitude; 
