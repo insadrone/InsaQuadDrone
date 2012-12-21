@@ -1,62 +1,103 @@
 #include <stdio.h>
+#include <unistd.h>
 
 #include <ardrone_api.h>
 #include <ardrone_tool/ardrone_tool.h>
 #include <ardrone_testing_tool.h>
 
-#include "avoidance.h"
+#include "../Avoidance/avoidance.h"
+#include "../Auto/auto.h"
 #include "../Comm/gps_comm.h"
 #include "../Control/drone_control.h"
+#include "../STMachine/IAvoid.h"
 
-    
-void avoid_obstacles() {
-  comm_datas datas;
-  
-  datas = get_comm_datas();
-  
-  double dangerThreshold=100;
-  double currentAltitude;
-  double avoidanceAltitude;
-  
-  if ((datas.srfl > dangerThreshold) && (datas.srfr > dangerThreshold)) {
-    //Path is clear
-    //Basic forward movement a control mvt law will be done in sprint 3
-    //CMD : Move Forward
-    if (datas.srfl + datas.srfl > 4*dangerThreshold) {
-      fprintf(stderr,"[Drone move forward With speed]\n");
-    } else {
-      fprintf(stderr,"[Drone move forward with a small step]\n");
-    }
-  } else {
-    //Path is Blocked
-      //CMD: Stop
-    fprintf(stderr,"[Drone Stop]\n");
-    //small_move(stop);
-    if(datas.srfl > dangerThreshold) {
-      //Right is less obstructed
-      //CMD: Turn Right
-      fprintf(stderr,"[Drone turn left]\n");
-      //small_move(turn_left);
-    } else if (datas.srfr > dangerThreshold) {
-      //Left is less obstructed
-      //CMD: Turn Left
-      fprintf(stderr,"[Drone turn right]\n");
-      //small_move(turn_right);
-    } else {
-      //If both are equally obstructed
-      //Memorise current Altitude
-      currentAltitude= 0;//get_nav_datas_altitude();
-      //CMD: Go up
-      fprintf(stderr,"[Drone Go up ]\n");
-      //small_move(up);
-    }
-  } 
+inC_IAvoid input;
+outC_IAvoid output;
+
+void go_up_threshold(float thresh) {
+  float alt = get_alt();
+  mov speed;
+  speed.power = 4;
+
+  printf("UP to %f\n",thresh);
+  while (alt < thresh) {
+    send_fast_order(up,(void *)&speed);
+    alt = get_alt();
+    usleep(100);
+  }
+  fprintf(redir_sortie,"REACH %f going UP\n",alt);
 }
- 
+
+void go_down_threshold(float thresh) {
+  float alt = get_alt();
+  mov speed;
+  speed.power = 4;
+  printf("DOWN to %f\n",thresh);
+  while (alt > thresh) {
+    send_fast_order(down,(void *)&speed);
+    alt = get_alt();
+    usleep(100);
+  }
+  fprintf(redir_sortie,"REACH %f going DOWN\n",alt);
+}
+    
+
+void command(outC_IAvoid comm) {
+  mov speed;
+
+  if (comm.up) {
+    speed.power = 6;
+    send_fast_order(up,(void *)&speed);
+  } else if (comm.down) {
+    speed.power = 3;
+    send_fast_order(down,(void *)&speed);
+  } else if (comm.stop) {
+    small_move(stop);
+  } else if (comm.auto1) {
+    speed.power = 1;
+    printf("avance\n");
+    send_fast_order(forward,(void *)&speed);
+  } else if (comm.forward) {
+    speed.power = 1;
+    printf("avance\n");
+    send_fast_order(forward,(void *)&speed);
+  }
+
+}
   
 DEFINE_THREAD_ROUTINE(avoidance, data) {
   
-  avoid_obstacles();
+  comm_datas datas;
+  double dangerThreshold=100;
+  int detection;
 
+  IAvoid_reset(&output);
+  input.obstacle_detected = 0;
+  input.latence1 = 100;
+  input.latence2 = 100;
+  input.latence3 = 100;
+  input.latence4 = 100;
+
+ while (1) {
+   printf("in auto1\n");
+   if (auto_ready) {
+     //get srf datas
+     printf("in auto2\n");
+     datas = get_comm_datas();
+     //check threshold
+     if (datas.srfr > dangerThreshold) {
+       detection = 1;
+     } else {
+       detection = 0;
+     } 
+   
+     input.obstacle_detected = detection;     
+     IAvoid(&input,&output);
+     command(output);
+     usleep(10000);    
+   }
+   //   usleep(100);
+ }
+ 
   return (THREAD_RET) 0;
 }

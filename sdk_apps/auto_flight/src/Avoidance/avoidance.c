@@ -10,6 +10,7 @@
 #include "../Comm/gps_comm.h"
 #include "../Control/drone_control.h"
 #include "../STMachine/IAvoid.h"
+#include "../GPS/gps.h"
 
 inC_IAvoid input;
 outC_IAvoid output;
@@ -70,6 +71,9 @@ DEFINE_THREAD_ROUTINE(avoidance, data) {
   comm_datas datas;
   double dangerThreshold=100;
   int detection;
+  double *average_left;
+
+  init_array_obstacle_pos2();
 
   IAvoid_reset(&output);
   input.obstacle_detected = 0;
@@ -84,6 +88,9 @@ DEFINE_THREAD_ROUTINE(avoidance, data) {
      //get srf datas
      printf("in auto2\n");
      datas = get_comm_datas();
+
+      average_obstacle_pos2(&datas.srfr, average_left);
+
      //check threshold
      if (datas.srfr > dangerThreshold) {
        detection = 1;
