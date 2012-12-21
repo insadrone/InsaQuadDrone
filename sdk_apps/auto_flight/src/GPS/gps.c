@@ -580,32 +580,3 @@ return 0;
 }*/
 
 
-
-
-/* int main () */
-/* {//coordonne de depart */
-/*     char str_gps[] = "$GPRMC,220516,A,4851.600,N,00220.4000,W,173.8,231.8,130694,004.2,W*70"; */
-/*     struct gps_coordinate *depart; */
-/*     depart = malloc(sizeof(struct gps_coordinate)); */
-/*     printf("%s\n", str_gps); */
-/*     extract_coord(str_gps,depart); */
-/*    //coordonnne de dest  */
-/*     struct gps_coordinate *dest; */
-/*     dest = malloc(sizeof(struct gps_coordinate)); */
-/*     char str_gps_dest[] =  "$GPRMC,220516,A,5038.400,N,00304.200,E,173.8,231.8,130694,004.2,W*70";	 */
-/*     printf("%s\n", str_gps_dest); */
-/*     extract_coord(str_gps_dest,dest); */
-
-/*     /\*depart->latitude = 	43.570; */
-/*     depart->longitude = 1.465  ;   */
-/*     dest->latitude = 43.570	; */
-/*     dest->longitude = 	1.465;*\/ */
-/*     double *distance, *angle; */
-/*     angle = malloc(sizeof(double)); */
-/*     distance = malloc(sizeof(double)); */
-/*     navigation(depart, dest, distance, angle); */
-/*     printf("angle distance %f %f \n", *angle , *distance); */
-    
-/* return 0; */
-/* } */
-

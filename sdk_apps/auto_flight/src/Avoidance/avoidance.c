@@ -10,7 +10,6 @@
 #include "../Comm/gps_comm.h"
 #include "../Control/drone_control.h"
 #include "../STMachine/IAvoid.h"
-#include "../GPS/gps.h"
 
 inC_IAvoid input;
 outC_IAvoid output;
@@ -47,13 +46,13 @@ void command(outC_IAvoid comm) {
   mov speed;
 
   if (comm.up) {
-    speed.power = 6;
+    speed.power = 8;
     send_fast_order(up,(void *)&speed);
   } else if (comm.down) {
     speed.power = 3;
     send_fast_order(down,(void *)&speed);
   } else if (comm.stop) {
-    small_move(stop);
+    send_fast_order(stop,NULL);
   } else if (comm.auto1) {
     speed.power = 1;
     printf("avance\n");
@@ -71,7 +70,8 @@ DEFINE_THREAD_ROUTINE(avoidance, data) {
   comm_datas datas;
   double dangerThreshold=100;
   int detection;
-  double *average_left;
+  double average_left;
+  int ret;
 
   init_array_obstacle_pos2();
 
@@ -79,21 +79,21 @@ DEFINE_THREAD_ROUTINE(avoidance, data) {
   input.obstacle_detected = 0;
   input.latence1 = 100;
   input.latence2 = 100;
-  input.latence3 = 100;
+  input.latence3 = 300;
   input.latence4 = 100;
 
  while (1) {
-   printf("in auto1\n");
+   usleep(10);
    if (auto_ready) {
      //get srf datas
-     printf("in auto2\n");
+     printf("KIKOOO\n");
      datas = get_comm_datas();
 
-     average_obstacle_pos2(&datas.srfr, average_left);
-     printf("\nMoyenne capteur : %lf", *average_left);
+     ret = average_obstacle_pos2(&datas.srfr, &average_left);
+     printf("Moyenne capteur(%d) : %f\n", ret, average_left);
 
      //check threshold
-     if (*average_left > dangerThreshold) {
+     if (average_left < dangerThreshold) {
        detection = 1;
      } else {
        detection = 0;
