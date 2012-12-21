@@ -30,6 +30,15 @@ double average_pos_obstacle_right;
 	// average position of obstacle
 
 
+double pos_obstacle_left2[OBS_NB_AVERAGE];
+	// array of last OBS_NB_AVERAGE position of target
+	// used to calculate its average position
+int position_array_pos_obstacle2;
+	// Integer used to scan the array above (0< & <SAMPLE_NB_AVERAGE)
+double average_pos_obstacle_left2;
+	// average position of obstacle
+
+
 int initialisation_gps(struct gps_coordinate *depart,struct gps_coordinate *dest, struct gps_coordinate *error)
 {
   if  (depart->latitude == -1.0 && depart->longitude == -1.0)  {
@@ -144,7 +153,6 @@ void extract_error(char *gpgga_string, gps_error *g_error) {
  * INPUT: 2 coordinates gps (struct gps_coordinate)                                                       
  * OUTPUT: distance(m) and angle(m) (double)                                                              
  */
-
 void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, double *distance, double *angle , struct gps_coordinate *error)
 {
   double y,x;
@@ -397,6 +405,66 @@ int average_obstacle_pos(double *left, double *right, double *average_left, doub
 }
 
 
+int average_obstacle_pos2(double *left, double *average_left)
+{
+	int i = 0,j = 0;
+
+	// check if new position is valid
+	if(*left < 0)
+		return -1;
+
+	// check if an average has already been calculated
+	if(average_pos_obstacle_left2 < 0)
+	{	// if no (array empty), easy
+		pos_obstacle_left2[position_array_pos_obstacle2] = *left;
+
+		average_pos_obstacle_left2 = *left;
+	}
+	// else scan array and calculate average and variance
+	else
+	{
+		// add value to the array of positions if tolerance OK
+		if((*left < (average_pos_obstacle_left2 - SENSOR_TOLERANCE))
+			|| (*left > (average_pos_obstacle_left2 + SENSOR_TOLERANCE)))
+		{
+			return -1;
+		}
+		else 
+		{
+			pos_obstacle_left2[position_array_pos_obstacle2] = *left;
+		}
+
+		// init variables for calulation
+		average_pos_obstacle_left2 = 0;
+
+		//scan array
+		for(i = 0; i < OBS_NB_AVERAGE; i++)
+		{	// calculate if values OK
+			if(pos_obstacle_left2[i] > 0)
+			{
+				// Sum(Xi)
+				average_pos_obstacle_left2 += pos_obstacle_left2[i];
+				j++;
+			} // end if calcul with apporpriate values
+		} // end for scan array
+
+		// average = E(X) = Sum(Xi)/nb_sample
+		average_pos_obstacle_left2 = (average_pos_obstacle_left2 / j);
+
+	} // end else from if no average has already been calculated
+
+	// Update next position to write int he array (cyclic operating)
+	if(position_array_pos_obstacle2 == (OBS_NB_AVERAGE-1))
+		position_array_pos_obstacle2 = 0;
+	else
+		position_array_pos_obstacle2++;
+
+	// write results in the output structure
+	*average_left = average_pos_obstacle_left2;
+
+	return 1;	
+}
+
 
 /*
  *	Init array of last X position of the obstacle
@@ -416,6 +484,19 @@ void init_array_obstacle_pos(void)
 	average_pos_obstacle_left = -1;
 	average_pos_obstacle_right = -1;
 }
+
+
+void init_array_obstacle_pos2(void)
+{
+	for(position_array_pos_obstacle2 = 0; position_array_pos_obstacle2 < OBS_NB_AVERAGE; ++position_array_pos_obstacle2)
+	{
+		pos_obstacle_left2[position_array_pos_obstacle2] = -1;
+	}
+	// init other variables
+	position_array_pos_obstacle2 = 0;
+	average_pos_obstacle_left2 = -1;
+}
+
 
 /* ================================================================================================= */
 /*	basic test for functions average_target_pos, init_array_target_pos and check_gps_coord_struc
