@@ -89,10 +89,11 @@ DEFINE_THREAD_ROUTINE(avoidance, data) {
      printf("in auto2\n");
      datas = get_comm_datas();
 
-      average_obstacle_pos2(&datas.srfr, average_left);
+     average_obstacle_pos2(&datas.srfr, average_left);
+     printf("\nMoyenne capteur : %lf", *average_left);
 
      //check threshold
-     if (datas.srfr > dangerThreshold) {
+     if (*average_left > dangerThreshold) {
        detection = 1;
      } else {
        detection = 0;
