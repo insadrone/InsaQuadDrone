@@ -10,10 +10,10 @@
 #define UDP_TARGET 6445
 
 char buf_target[512];
-
+/* all datas sent from target will be stocked in ret_datas_target */
 comm_datas_target ret_datas_target;
 
-
+/*  Distribute each buffer into their corresponding value of ret_datas_target */
 void record_data_target(char *buf) {
   char *gprmc_begin = "$GPRMC";
   char *gpgga_begin = "$GPGGA";
@@ -37,10 +37,14 @@ void record_data_target(char *buf) {
 
 }
 
+/* return value of ret_datas_target */
 comm_datas_target get_comm_datas_target() {
   return ret_datas_target;
 }
 
+/* 
+  Start listening the buffers sent from target
+*/
 int start_comm_target(void)
 {
     udp_struct udp_target;
