@@ -12,9 +12,9 @@
 
 char buf_uav[512];
 
-int start_listen;
+int start_listen; // 1 start ; 0 stop
 
-int srf_received = 0;
+int srf_received = 0; 
 
 comm_datas ret_datas;
 
@@ -61,6 +61,10 @@ comm_datas get_comm_datas() {
 /*   return NULL; */
 /* } */
 
+
+/* 
+     Distribute each buffer into their corresponding value of ret_datas
+*/
 int record_data(char *buf) {
   char *gprmc_begin = "$GPRMC";
   char *gpgga_begin = "$GPGGA";
@@ -87,6 +91,9 @@ int record_data(char *buf) {
   return ret_val;
 }
 
+/*
+   Start listening the buffers sent from uav
+*/
 int start_comm(void)
 {
     udp_struct udp_uav;
