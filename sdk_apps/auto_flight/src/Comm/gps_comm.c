@@ -16,6 +16,7 @@ int start_listen; // 1 start ; 0 stop
 
 int srf_received = 0; 
 
+/* all datas sent from uav will be stocked in ret_datas */
 comm_datas ret_datas;
 
 void diep(const char *s)
