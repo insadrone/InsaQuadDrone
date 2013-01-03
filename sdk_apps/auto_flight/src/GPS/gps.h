@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 
-#define SAMPLE_NB_AVERAGE 10	// number of sample used for average calculation of target postion
+#define SAMPLE_NB_AVERAGE 10   // number of sample used for average calculation of target postion
 #define TOLERANCE 15.0/(30.9*3600.0)	// distance max that new position of target can be from its average position
 /*1 degree = 111.2km     1 minute = 1853m   1 second = 30.9m  => x (m) = x/(30.9 *3600) (degree) */
 
@@ -16,16 +16,33 @@ struct gps_coordinate{
 };
 
 typedef struct gps_error_t {
-  int sat_number;
+  int sat_number;//number of satelitte
   double hdop;
 } gps_error;
 
+/* Initialisation by calculating the difference between 2 coordinates gps given by GPS of UAV and mobile device at the same point                                     
+ * INPUT: 2 coordinates gps (struct gps_coordinate)                                                       
+ * OUTPUT: 0 : success ;  
+           otherwise -1                                                           
+ */
 int initialisation_gps(struct gps_coordinate *depart,struct gps_coordinate *dest, struct gps_coordinate *error);
 
+/*Extract coordinate gps from a string gprmc given by gps device                                         
+ * INPUT: string gprmc (char [])                                                      
+ * OUTPUT: coordinate gps (struct gps_coordinate) = -1.0 si string gprmc is not working                                                        
+ */
 void extract_coord( char str_gps[], struct gps_coordinate *point );
 
+/*Extract coordinate gps from a string gpgga given by gps device                                         
+ * INPUT: string gpgga (char *)                                                      
+ * OUTPUT: error gps (struct gps_error)                                                        
+ */
 void extract_error(char *gpgga_string, gps_error *g_error);
 
+/* Calculate the distance and bearing between 2 coordinate gps                                           
+ * INPUT: 2 coordinates gps (struct gps_coordinate)                                                       
+ * OUTPUT: distance(m) and angle(m) (double)                                                              
+ */
 void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, double *distance, double *angle , struct gps_coordinate *error_gps);
 
 
