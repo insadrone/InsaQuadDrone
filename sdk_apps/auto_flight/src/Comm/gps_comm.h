@@ -3,6 +3,8 @@
 
 #include <VP_Api/vp_api_thread_helper.h>
 #include "../GPS/gps.h"
+
+/* all datas sent from uav will be stocked in this structure */
 typedef struct comm_datas_t {
   double srfl;
   double srfr;
@@ -11,11 +13,19 @@ typedef struct comm_datas_t {
 } comm_datas;
 
 //extern int srf_received;
-
+/* initilisation the communication UDP between the target and the station */
 void init_comm();
+
+/* stop the communication UDP between the target and the station */
 void stop_comm();
+
+/* return value of ret_datas */ 
 comm_datas get_comm_datas();
+
+/*  Distribute each buffer into their corresponding value of ret_datas */
 int record_data(char *buf);
+
+/* Start listening the buffers sent from uav */
 int start_comm(void);
 
 
