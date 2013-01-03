@@ -38,14 +38,19 @@ int position_array_pos_obstacle2;
 double average_pos_obstacle_left2;
 	// average position of obstacle
 
-
+/* Initialisation by calculating the difference between 2 coordinates gps given by GPS of UAV and mobile device at the same point                                     
+ * INPUT: 2 coordinates gps (struct gps_coordinate)                                                       
+ * OUTPUT: 0 : success ;  -1 otherwise                                                            
+ */
 int initialisation_gps(struct gps_coordinate *depart,struct gps_coordinate *dest, struct gps_coordinate *error)
 {
   if  (depart->latitude == -1.0 && depart->longitude == -1.0)  {
+    error = NULL;	
     printf("Coordinates depart undertermined \n");
     return -1;
   }
   else if ( dest->latitude == -1.0 && dest->longitude == -1.0 ){
+    error = NULL;
     printf("Coordinates destination undertermined \n");
     return -1;
   }
