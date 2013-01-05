@@ -12,7 +12,11 @@
 #include "../Comm_target/target_comm.h"
 #include "../Control/drone_control.h"
 
-
+/*
+INPUT: angle   (float)
+       tolerance (float)
+This function will make uav turn to the direction of target with an error of +- tolerance     
+*/
 void turn_angle2(float target_angle, float tol) {
 
   fdata sauv_ndata = get_ndata();
@@ -40,11 +44,18 @@ void turn_angle2(float target_angle, float tol) {
   
   send_order(stop,NULL);
   sleep(1);
-  printf("kikoo\n");
+  printf("finish turning\n");
     
 }
-
+/*
+All steps for reaching target
+1 Take off and Calibration
+2 Receive coordinates gps and calculate direction
+3 Turn to direction, then move forward in 3s
+4 Return to step 2, if distance < 4 m , Landing ...
+*/
 void go_target() {
+  //1 DONE, 0 not yet	
   static int landed = 0;
   static int calibration = 0;
   static int mission = 0;
@@ -55,7 +66,6 @@ void go_target() {
   //gps_error error_dest, error_depart;
   static double distance,angle;
   	
-    //check state of uav and battery level
       
       if ( (landed == 1) && (calibration == 0) ){
 	sleep(5);
