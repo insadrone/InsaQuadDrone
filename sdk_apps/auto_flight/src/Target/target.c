@@ -28,9 +28,9 @@ void turn_angle2(float target_angle, float tol) {
   if (target_angle < 0) target_angle += 360;
 
   if (target_angle > angle_360) {
-    (target_angle - angle_360) < 180 ? send_order(turn_left,NULL) : send_order(turn_right,NULL);
+    // (target_angle - angle_360) < 180 ? send_order(turn_left,NULL) : send_order(turn_right,NULL);
   } else {
-    (angle_360 - target_angle) < 180 ? send_order(turn_right,NULL) : send_order(turn_left,NULL);
+    //(angle_360 - target_angle) < 180 ? send_order(turn_right,NULL) : send_order(turn_left,NULL);
   }
 
   while (!(sauv_ndata.psi_current > angle_inf && sauv_ndata.psi_current < angle_sup)) {
@@ -38,7 +38,7 @@ void turn_angle2(float target_angle, float tol) {
     usleep(100);
   }
   
-  send_order(stop,NULL);
+  //  send_order(stop,NULL);
   sleep(1);
   printf("kikoo\n");
     
@@ -77,17 +77,19 @@ void go_target() {
 		
 	navigation(&depart, &datas_target.dest, &distance, &angle, NULL); //&relatif_error
 		
-	turn_angle2(angle ,5.0);
 	printf("turn angle %f, &angle",angle);
+	turn_angle2(angle ,5.0);
 		
 	sleep(1);
 	if (distance > 4.0){
-	  send_order(forward,NULL);
+	  //send_order(forward,NULL);
 	  printf("FORWARD  \n");
 	  sleep(3);
-	} else { send_order(land,NULL); printf("LANDING \n");
-	  mission = 1;}
-	
+	} else { 
+	  //send_order(land,NULL); 
+	  printf("LANDING \n");
+	  mission = 1;
+	}	
       }
 }
 
