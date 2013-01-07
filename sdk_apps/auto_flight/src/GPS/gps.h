@@ -52,6 +52,8 @@ void navigation(struct gps_coordinate *depart,struct gps_coordinate *dest, doubl
  * Input: struct gps_coordinate, new GPS coord of the target
  * Output: struct gps_coordinate, average of last X position of the target (X defined in the .h file)
  * Return: 1 upon success, -1 otherwise
+ *
+ * Call this function first to init buffer : void init_array_target_pos(void)
 */
 int average_target_pos(struct gps_coordinate *new_pos, struct gps_coordinate *average_pos);
 
