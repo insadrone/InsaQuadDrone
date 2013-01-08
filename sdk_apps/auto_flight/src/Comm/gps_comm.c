@@ -101,7 +101,8 @@ int start_comm(void)
     int msglen_uav;
   
     if(udpserver_init(&udp_uav,UDP_UAV,1)) diep("udp_UAV init");
-  
+
+
     while (start_listen) {
       //printf("listen\n");
 	do {

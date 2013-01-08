@@ -23,8 +23,10 @@ void record_data_target(char *buf) {
     strncpy(ret_datas_target.gprmc_string,buf_target,sizeof(ret_datas_target.gprmc_string));
     printf("TARGET%s",ret_datas_target.gprmc_string);    
     extract_coord(ret_datas_target.gprmc_string,&dest);
+    //printf("RETOUR %d\n",
     average_target_pos(&dest, &ret_datas_target.dest);
-    
+    //printf("KIKOO %f %f\n",ret_datas_target.dest.longitude,ret_datas_target.dest.latitude);
+   
   } else if (!strncmp(gpgga_begin,buf,6)) {
     strncpy(ret_datas_target.gpgga_string,buf_target,sizeof(ret_datas_target.gpgga_string));
     printf("%s",ret_datas_target.gpgga_string);
@@ -54,6 +56,8 @@ int start_comm_target(void)
     if(udpserver_init(&udp_target,UDP_TARGET,1)) perror("udp_target init");
 
       //printf("listen\n");
+
+    init_array_target_pos();
 
     while (1) {    
       do {

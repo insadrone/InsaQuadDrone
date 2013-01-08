@@ -105,9 +105,13 @@ void extract_coord( char str_gps[], struct gps_coordinate *point )
 	      minute[j-2] = result[j];
 	      j++;		
 	    }
-	  printf( "latitude (degree minute) %s %s\n", degree , minute);
-	  point->latitude = atof(degree) + atof(minute)/60.0 ;	//convert into degree   
-	  printf( "latitude %f\n", point->latitude);
+	  //printf( "latitude (degree minute) %s %s\n", degree , minute);
+	  point->latitude = atof(degree) + atof(minute)/60.0 ;	//convert into degree
+	  if (point->latitude > 90.0 || point->latitude < -90.0) {
+	    point->latitude = -1.0;
+	    point->longitude = -1.0;
+	  }
+	  //printf( "latitude %f\n", point->latitude);
 	}
 
       if (i==5) //effecter la valeur de longitude
@@ -122,9 +126,13 @@ void extract_coord( char str_gps[], struct gps_coordinate *point )
 	      minute[j-3] = result[j];
 	      j++;		
 	    }
-	  printf( "longitude (degree minute) %s %s\n", degree , minute);
+	  //printf( "longitude (degree minute) %s %s\n", degree , minute);
 	  point->longitude = atof(degree) + atof(minute)/60.0 ; //convert into degree
-	  printf( "longitude  %f\n\n", point->longitude);
+	  if (point->longitude > 180.0 || point->longitude < -180.0) {
+	    point->latitude = -1.0;
+	    point->longitude = -1.0;
+	  }
+	  //printf( "longitude  %f\n\n", point->longitude);
        	}	     	
     }
 }
@@ -238,7 +246,7 @@ int average_target_pos(struct gps_coordinate *new_pos, struct gps_coordinate *av
 	{
 		// add value to the array of positions if tolerance OK
 		if((new_pos->latitude < (average_pos_target.latitude - TOLERANCE))
-			|| (new_pos->latitude > (average_pos_target.latitude + TOLERANCE))
+		   || (new_pos->latitude > (average_pos_target.latitude + TOLERANCE))
 			|| (new_pos->longitude < (average_pos_target.longitude - TOLERANCE))
 			|| (new_pos->longitude > (average_pos_target.longitude + TOLERANCE)))
 		{
@@ -261,7 +269,7 @@ int average_target_pos(struct gps_coordinate *new_pos, struct gps_coordinate *av
 		{	// calculate if values OK
 			if(check_gps_coord_struc(&pos_target[i]) == 1)
 			{
-				// Sum(Xi)
+			  // Sum(Xi)
 				average_pos_target.latitude += pos_target[i].latitude;
 				average_pos_target.longitude += pos_target[i].longitude;
 				// Sum(Xi²)
