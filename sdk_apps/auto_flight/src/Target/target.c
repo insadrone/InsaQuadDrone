@@ -62,10 +62,32 @@ void go_target() {
   comm_datas datas;
   comm_datas_target datas_target;
   struct gps_coordinate depart;
-  //struct gps_coordinate relatif_error;
+  struct gps_coordinate relatif_error;
   //gps_error error_dest, error_depart;
   static double distance,angle;
-  	
+  char msg = "N";	
+  distance = 1000.0;	
+      while(distance!=0.0){
+  	datas = get_comm_datas();	
+	extract_coord(datas.gprmc_string,&depart);
+	datas_target = get_comm_datas_target();
+	printf("INIT\n");	
+	initialisation(&depart, &datas_target.dest, &relatif_error);
+        navigation(depart,dest,&distance,&angle,&relatif_error);
+        printf("INIT : distance %f \n", distance);       
+        
+      }
+      while(c != "Y"){
+	    scanf("Is your target ready  ? [Y/N] : %c \n", &msg);
+    	    printf("%c\n",msg);
+      }
+      
+      if (landed == 0){
+      	printf("TAKE OFF \n");
+      	small_move(take_off);
+      	landed = 1;
+      	sleep(1);
+      }
       
       if ( (landed == 1) && (calibration == 0) ){
 	sleep(5);
