@@ -43,34 +43,22 @@ double average_pos_obstacle_left2;
  * OUTPUT: 0 : success ;  -1 otherwise                                                            
  */
 int initialisation_gps(struct gps_coordinate *depart,struct gps_coordinate *dest, struct gps_coordinate *error)
-{double d,a;
-d = 10.0;
-while (d>3.0){	//d : distance defined when we waiting for GPS coordinate updated
+{
   if  (depart->latitude == -1.0 && depart->longitude == -1.0)  {
-    error = NULL;	
     printf("Coordinates depart undertermined \n");
     return -1;
   }
   else if ( dest->latitude == -1.0 && dest->longitude == -1.0 ){
-    error = NULL;
     printf("Coordinates destination undertermined \n");
     return -1;
   }
   else{
-    navigation(depart,dest,&d,&a,NULL);
-    printf("INIT : distance %f : ", d);
     error->latitude = dest->latitude - depart->latitude;
     error->longitude = dest->longitude - depart->longitude;
 
-    printf("INIT : erreur lat %f, erreur long %f\n",error->latitude,error->longitude);
+    printf("erreur lat %f, erreur long %f\n",error->latitude,error->longitude);
     return 0;
-  }//if
-}// while
-  
-  printf("finish initilisation");
-  navigation(depart,dest,&d,&a,error);
-  printf("FINISH INIT : distance %f : ", d);
-  
+  }  
   
 }
 
