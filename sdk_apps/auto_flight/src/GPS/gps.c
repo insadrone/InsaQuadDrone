@@ -45,12 +45,10 @@ double average_pos_obstacle_left2;
 int initialisation_gps(struct gps_coordinate *depart,struct gps_coordinate *dest, struct gps_coordinate *error)
 {
   if  (depart->latitude == -1.0 && depart->longitude == -1.0)  {
-    error = NULL;	
     printf("Coordinates depart undertermined \n");
     return -1;
   }
   else if ( dest->latitude == -1.0 && dest->longitude == -1.0 ){
-    error = NULL;
     printf("Coordinates destination undertermined \n");
     return -1;
   }
@@ -60,7 +58,8 @@ int initialisation_gps(struct gps_coordinate *depart,struct gps_coordinate *dest
 
     printf("erreur lat %f, erreur long %f\n",error->latitude,error->longitude);
     return 0;
-  }
+  }  
+  
 }
 
 

@@ -114,7 +114,8 @@ void control() {
    
 DEFINE_THREAD_ROUTINE(auto_control, data) {
   redir_sortie = fopen("lol","a+");
-
+  fprintf(redir_sortie,"KIOKOOKIKO\n");
+  fflush(redir_sortie);
   control();
 
   return (THREAD_RET) 0;

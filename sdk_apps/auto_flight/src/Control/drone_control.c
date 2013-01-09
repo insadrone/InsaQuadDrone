@@ -308,6 +308,7 @@ C_RESULT land(void *arg) {
  */
 
 C_RESULT turn_left(void *arg) {
+  printf("PUTE LEFT\n");
     float yaw = YAW_POWER;
     if (arg != NULL){
 	yaw = (float)((mov*)arg)->power / 10.0;
@@ -325,6 +326,7 @@ C_RESULT turn_left(void *arg) {
  */
 
 C_RESULT turn_right(void *arg) {
+  printf("PUTE RIGHT\n");
     float yaw = YAW_POWER;
     if (arg != NULL){
 	yaw = (float)((mov*)arg)->power / 10.0;
@@ -342,6 +344,7 @@ C_RESULT turn_right(void *arg) {
  */
 
 C_RESULT forward(void *arg) {
+  printf("PUTE FORWARD\n");
     float theta = THETA_POWER;
     if (arg != NULL){
 	theta = (float)((mov*)arg)->power / 10.0;
@@ -365,7 +368,7 @@ C_RESULT backward(void *arg) {
     if (arg != NULL){
 	theta = (float)((mov*)arg)->power / 10.0;
     }
-    printf("go backward\n");
+    printf("GO BACKWARD\n");
     drone_state.flag = 1;
     drone_state.theta = theta;
     return C_OK;
@@ -383,7 +386,7 @@ C_RESULT up(void *arg) {
     if (arg != NULL){
 	gaz = (float)((mov*)arg)->power / 10.0;
     }
-    printf("go up\n");
+    printf("GO UP\n");
     drone_state.flag = 1;
     drone_state.gaz = gaz;
     return C_OK;
@@ -401,7 +404,7 @@ C_RESULT down(void *arg) {
     if (arg != NULL){
 	gaz = -(float)((mov*)arg)->power / 10.0;
     }
-    printf("go up\n");
+    printf("GO UP\n");
     drone_state.flag = 1;
     drone_state.gaz = gaz;
     return C_OK;
@@ -419,7 +422,7 @@ C_RESULT right(void *arg) {
     if (arg != NULL){
 	phi = (float)((mov*)arg)->power / 10.0;
     }
-    printf("go up\n");
+    printf("GO UP\n");
     drone_state.flag = 1;
     drone_state.phi = phi;
     return C_OK;
@@ -437,7 +440,7 @@ C_RESULT left(void *arg) {
     if (arg != NULL){
 	phi = -(float)((mov*)arg)->power / 10.0;
     }
-    printf("go up\n");
+    printf("GO LEFT\n");
     drone_state.flag = 1;
     drone_state.phi = phi;
     return C_OK;
@@ -451,7 +454,7 @@ C_RESULT left(void *arg) {
  */
 
 C_RESULT stop(void *arg) {
-    printf("stop!\n");
+    printf("STOP!\n");
     return C_OK;
 }
 
