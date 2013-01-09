@@ -1,0 +1,103 @@
+% !TEX encoding = IsoLatin
+
+\documentclass{report}
+\usepackage[usenames,dvipsnames]{color}
+%pour le code
+\usepackage{listings}
+
+\usepackage[utf8]{inputenc}
+ \usepackage{lmodern}
+\usepackage{listings}
+\lstset{language=C}
+ 
+ %pour les couleurs !!
+ \usepackage[usenames,dvipsnames]{color}
+
+\usepackage{geometry}
+\geometry{scale=0.8, nohead}
+\usepackage{t1enc}
+\usepackage[french]{babel}
+
+\usepackage{url}
+
+
+ %pour les images
+\usepackage{graphicx}
+\definecolor{vert}{rgb}{0.2,0.6,0.4} 
+\lstset{language=c, breaklines=true, basicstyle=\ttfamily,basicstyle=\scriptsize, keywordstyle=\color{blue}, commentstyle=\color{vert}, stringstyle=\color{red}, identifierstyle=\ttfamily}
+
+
+\makeatletter
+
+\geometry{ hmargin=2cm, vmargin=2cm}
+
+
+\makeatletter
+
+\geometry{ hmargin=2cm, vmargin=2cm}
+
+\def\blurb{%
+Documentation projet Drone}
+
+
+\def\ligne#1{%
+  \hbox to \hsize{%
+    \vbox{\centering #1}}}%
+
+\makeatletter
+\def\maketitle{%
+	\null
+	\vfill
+	\vbox{\centering \Large \textbf{\blurb}}
+	\vspace{15mm}
+	\vbox{\centering \LARGE \textbf{\@title}}
+	\vspace{15mm}
+	\vbox{\centering \@author}
+	\vspace{8mm}
+	\vbox{\centering \@date}
+	\vspace{15mm}
+	\vbox{\centering \textbf{Résumé du projet}}
+	\vspace{5mm}
+	\vbox{%
+		\setlength{\fboxsep}{10pt}
+		\centering \fbox{%
+		\begin{minipage}{0.9\textwidth}
+			\setlength{\parindent}{1cm}
+			\setlength{\parskip}{2ex plus .4ex minus .4ex}                  
+                        Mettre un résumé
+		\end{minipage}%
+	}
+%
+	}
+	\vfill
+	\clearpage
+}
+
+\title{Equipe Pink 2012}
+\author{
+Ngoc-Duc Huynh \texttt{<volkmann@etud.insa-toulouse.fr>}\\
+Florian Volkmann \texttt{<volkmann@etud.insa-toulouse.fr>}\\
+Fahdi Halloumi \texttt{<halloumi@etud.insa-toulouse.fr>}\\
+Mathieu Othacéhé \texttt{<othacehe@etud.insa-toulouse.fr>}}
+\date{5ème année SEC}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+
+\nocite{*}
+
+\chapter{Introduction}
+
+\chapter{SDD}
+\input{sdd}
+\chapter{SRS}
+\input{srs}
+\chapter{STD}
+\input{std}
+
+\chapter{Conclusion}
+
+\end{document}
