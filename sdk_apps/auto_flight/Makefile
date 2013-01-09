@@ -34,7 +34,8 @@ GENERIC_BINARIES_COMMON_SOURCE_FILES+=			\
    Avoidance/avoidance.c \
    Comm_target/target_comm.c \
    Target/target.c \
-   STMachine/IAvoid.c
+   STMachine/IAvoid.c \
+   Data_compute/data_comp.c
 
 GENERIC_INCLUDES+=					\
 	$(SRC_DIR) \

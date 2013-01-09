@@ -11,6 +11,7 @@
 #include "../Comm/gps_comm.h"
 #include "../Comm_target/target_comm.h"
 #include "../Control/drone_control.h"
+#include "../Data_compute/data_comp.h"
 
 /*
   INPUT: angle   (float)
@@ -197,12 +198,19 @@ void test_target() {
 }
 
 
+void test_target2() {
+  double dist = compute_distance();
+  printf("DISTANCE Restante %f\n",dist);
+  sleep(1);
+}
+
 
 DEFINE_THREAD_ROUTINE(target, data) {
 
   while (1) {
     if (target_ready) {
-      go_target();
+      //go_target();
+      test_target2();
       usleep(100);
     }
     usleep(100);
