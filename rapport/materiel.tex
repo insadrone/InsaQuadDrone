@@ -1,0 +1,94 @@
+\section{Parrot 2.0}
+The Parrot AR.Drone is a radio controlled flying quadrotor helicopter built by the French company Parrot. The drone is designed to be
+controlled by any electronic device having wi-fi connection and sufficient ressource to run a control software. Only  android, iOS and windows have offically distributed control applications. In other hand, only Windows and Linux OS are supported as a development platform.
+The choice of the department for this drone as a base for the project is due to the harmless character of this quadrotor.
+Two versions of the Parrot AR.Drone exists. For our project only the new version(Ar.Drone 2.0) is supported.
+\subsection{Ressources}
+Many ressources could be found on this UAV and this what make it one of the best choices:
+\begin{itemize}
+\item \url{http://www.parrot.com/fr}
+%\href{http://www.parrot.com/fr}{Parrot Official Website}
+\item \url{http://ardrone.parrot.com/parrot-ar-drone/usa/}
+%\href{http://ardrone.parrot.com/parrot-ar-drone/usa/}{Parrot Ardrone Commercial Website}
+\item \url{http://projects.ardrone.org/}
+%\href{http://projects.ardrone.org/}{Ardrone Project Website}
+\item \url{http://devzone.parrot.com/}
+%\href{http://devzone.parrot.com/}{Parrot Developpers Website}
+\end{itemize}
+\subsection{Specification}
+Here a quick overview of the general specification of the drone:
+\begin{itemize}
+\item[-] Autonomy : Approximately 12 minutes, recharging time of 1h30.
+\item[-] Maximum range : 50m average, 100m in a wide-open space with few Wi-Fi waves.
+\item[-] Maximum altitude : 6m is the stability limitation, 50m the wi-fi limitation (which could be hacked with wi-fi booster to go up to 75m).
+\item[-] Maximum additional supported weight : ~80g is the limit of stability, ~100g is the limit of motors propulsion.
+\item[-] Maximum speed : 18 km/h.
+\item[-] Maximum supported wind speed : 2km/h.
+
+\end{itemize}
+
+\subsection{Hardware}
+The hardware reference is as follow:
+\begin{itemize}
+\item[*] AR.Drone 1.0 : carte Mykonos, processeur ARM926EJ-S rev 5 (v5l) Wi-Fi: AR6000 Memory: 128MB RAM
+\item[*] AR.Drone 2.0 : Mykonos2 card, Processor OMAP 3640 1GHz 32 bit ARM Cortex A8 with a video DSP 800MHz TMS320DMC64x
+\end{itemize}
+
+\subsection{Software}
+The board has an embedded Linux with these reference : //
+\begin{itemize}
+\item[*] Linux myhost 2.6.27.47-parrot-01227-g93dde09 \#1 preempt Fri Jul 2 15:23:06 CEST 2010 armv5tejl GNU/Linux 
+\item[*] Linux 2.6.32 kernel: Linux uclibc 2.6.32.9-g0d605ac \#1 preempt Fri Apr 6 12:01:59 CEST 2012 armv7l GNU/Linux 
+\end{itemize}
+This embedded linux contains these basic packages :
+\begin{itemize}
+\item[-] BusyBox
+\item[-] Mtdutils
+\item[-] zlib
+\item[-] ethtool
+\item[-] propcps
+\item[-] udev
+\item[-] dsp bridge 
+\item[-] lcml dsp codec
+\item[-] wireless tools
+\item[-] exif
+\item[-] iptables
+\item[-] usbmodeswitch
+\item[-] lsusb
+\item[-] alsa lib
+\item[-] barry
+\item[-] busydroid
+\item[-] webkit
+\end{itemize}
+
+We added multiple modules in order to be able to communicate with usb port:
+\begin{itemize}
+\item[-] cdc-acm 
+\item[-] usbserial
+\item[-] ftdi\_sio
+\end{itemize}
+
+you need to cross-compile these modules you can use the following step :
+\begin{enumerate}
+\item Download an ARM Cross-compiler you can find one on the website of Mentor Graphics (successor of Code sourcery) 
+\url{http://www.mentor.com/embedded-software/sourcery-tools/sourcery-codebench/editions/lite-edition/arm-gnu-linux}
+\item Install the cross-compiler :
+
+\begin{lstlisting}
+#: chmod +x arm-2012.03-57-arm-none-linux-gnueabi.bin
+#: ./arm-2012.03-57-arm-none-linux-gnueabi.bin
+\end{lstlisting}
+\item Compile the module :
+\begin{lstlisting}
+#: /opt/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_GNU_Linux/bin/arm-none-linux-gnueabi-gcc -march=armv7-a toto.c -o toto.elf
+\end{lstlisting}
+
+\end{enumerate}
+
+\subsection{Development}
+
+\section{Arduino}
+
+\section{Android}
+
+\section{Ultrasonic Sensor}
