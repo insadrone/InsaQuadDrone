@@ -297,7 +297,80 @@ unzip ARDrone_SDK2_Video_Demo.zip
 rm ARDrone_SDK2_Video_Demo.zip
 make
 \end{lstlisting}
+\subsubsection{Integrate Open CV} 
+We prepared open CV integration in case we need image processing.
+To install open cv please use the following steps.
+\begin{lstlisting}
+apt-get install build-essential libgtk2.0* git Subversion pkgconfig python-dev python-numpy* ffmpeg libavcodec-dev libavformat-dev libswscale-dev libdc1394*  libjpeg-dev libpng-dev libtiff-dev libjasper-dev
+apt-get install cmake-gui
+wget http://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.4.3/OpenCV-2.4.3rc.tar.bz2
+#Or 
+cd ~/<my_working _directory>
+git clone https://github.com/Itseez/opencv.git
+cd ~/opencv
+mkdir release
+cd release
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PR\begin{figure}[X=/usr/local ..
+#use this advanced mode
+cmake-gui ..
+#get rid of all 3d party lib not downloaded
+make
+sudo make install
+#loading opencv.pc (opencv pkg configuration)
+cd unix-install
+pkg-config opencv
+#Configurer les librairie partager
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+#or
+#Library path can be specified in /etc/ld.so.conf.d/ by creating a file called 'opencv.conf' which contains the opencv library path (Default #configuration is /usr/local/lib)Once the file is created, execute
+sudo ldconfig -v 
+\end{lstlisting}
+
+You need to add into your project makefile pkg-config -cflags for the includes and pkg-config -lflags for the linker.
+
 \section{Arduino}
+\subsection{Ressources}
+\begin{itemize}
+\item[-] Home Page : http://www.arduino.cc/
+\item[-] Arduino Playground Tutorials : http://www.arduino.cc/playground/Learning/Linux
+\item[-] Arduino Troubleshooting FAQ : http://arduino.cc/en/Guide/Troubleshooting
+\end{itemize}
+\subsection{Requirements}
+\begin{itemize}
+\item[*] Arduino SDK
+\item[*] Udev
+“Udev is the device manager for the Linux kernel. Primarily, it manages device nodes in /dev. It is the successor of devfs and hotplug, which means that it handles the /dev directory and all user space actions when adding/removing devices, including firmware load.” source wiki
+\item[*] avr-gcc
+\item[*] avr-libc
+\item[*] binutils-avr
+\item[*] avrdude 
+\item[*] RXTX Package (librxtx librairie COM JAVA)
+\item[*] arduino-cmake
+\end{itemize}
+
+\subsection{Install}
+\begin{lstlisting}
+apt-get install arduino
+wget http://arduino.googlecode.com/files/arduino-1.0.1-linux.tgz
+tar zxvf arduino-1.0.1-linux.tgz
+sudo usermod -aG dialout <myuser>
+gnome-session-quit --no-prompt
+sudo chmod 777 /run/lock
+cd arduino-1.0.1
+./arduino-1.0.1 # or use ``arduino Uno'' command line
+#Troubleshouting
+avr-gcc --v 
+avrdude
+ls /dev/tty*
+\end{lstlisting}
+To test follow these instructions :
+\begin{enumerate}
+\item file–>examples–>basic–>blink
+\item croquis–>check/compile
+\item tools–>serial port–> ttyACM0
+\item file–>upload
+\end{enumerate}
+\subsection{Development}
 We have used the arduino board uno, without any shield or add ons. The electrical schematics is just below.\\
 
 \begin{figure}[!h] 
@@ -422,7 +495,7 @@ void loop(){
 
 \end{lstlisting}
 
-Basically, in the main loop, we are extracting GPS strings and srf datas.\\
+Basically, in the main loop, we are extracting GPS strings and srf data.\\
 
 About GPS data, we just have to extract the GPRMC string of the 6 lines we receive every second.
 We need to test the beginning of the string. If is equal to "\$GPRMC" string, we store the string and send it via 
@@ -441,7 +514,7 @@ We have to send this distance to the UAV, like for the GPS strings.\\
 
 Using separately ultrasonic sensors and GPS works perfectly well. However it is difficult to use both components at the same time. The GPS extraction is using SoftwareSerial class and all incoming data are stored in a buffer of this class. Data's are written every 1 second, and if we are listening this buffer all the time (except for extraction), this buffer won't overflow. But, if data are written in this buffer while we are capturing ultrasonic wave, the writting will overflow the buffer and cause the loss of some information.\\
 
-It is impossible to multithread this program, so we have to schedule manually the execution of GPS and sensor listening. We know GPS data are incoming every second, and the execution of gps extraction last 100 ms, so we dedicate 600 ms to ultrasonic listening, and then we wait for GPS data to arrive.\\
+It is impossible to multithread this program, so we have to schedule manually the execution of GPS and sensor listening. We know GPS data are incoming every second, and the execution of gps extraction last 100 ms, so we dedicate 600 ms to ultrasonic listening, and then we wait for GPS data.\\
 
 This solution is not very satisfying because we take a margin of 300ms, and we don't have SRF data during 400ms, but we didn't find a better way to combine GPS and SRF sensors.\\
 

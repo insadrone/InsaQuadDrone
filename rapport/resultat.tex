@@ -1,0 +1,34 @@
+\section{Autonomous flight}
+
+At this point, we are able to launch a preplanned movements sequence. The movement library is quite sufficient to our needs.
+The drone is stable even with additional weight. 
+The following points  could be improved:
+
+\begin{enumerate}
+\item The movement library precision could be improved if the drone control model is developped.
+\item The stability could be improved if the vertical speed is correctly boosted (it can be changed on the config.ini).
+\item A PID could be used to add more fluency in the movements.
+\item A study may be performed to repart more efficiently the addition weight.
+\end{enumerate}
+
+\section{Obstacle avoidance}
+In the current state, the avoidance is performant. The drone is capable to avoid a fixed obstacle without any problem.
+It can also avoid moving obstcales but it's still not reliable.
+The following points could be improved:
+\begin{enumerate}
+\item The fluency of the avoidance could be improved with a PID (an implementation is already done still need to be tested).
+\item The avoidance could be extended to every obstacle using a second ultrasonic sensor, an arduino Mega because arduino Uno don't have sufficient hardware serial ports.
+\item A more sophisticated automaton modelisation then the actual would make the avoidance highly performant.
+\end{enumerate}
+
+\section{Target convergence}
+Currently, the target localisation and convergence is operational. The drone is able to localize the target, join it direction and stop within a defined range from it. The proximity convergence is not implemented yet but it will reuse programming blocks already developped like tag detection and small naviagtion movements defined in the movement library.The algorithm is pretty accurate and gives as an output the angle and the distance. Unfortunetly, the accumulated GPS errors make the distance precision very low but this fact is compensated by the proximity algorithm who uses image processing.
+
+The following points could be improved :
+\begin{enumerate}
+\item The GPS errors could be very reduced using a kalmann filter. (please take note that the implementation of this filter is pretty complicated but the improvement will be tremendous).
+\item A sophisticated image processing could be used to improve the calculated path.
+\item A sophisticated scade automaton combined with a PID would improve the fluency of the movements.(A scade automaton already developped but not yet integrated neither tested)
+\end{enumerate}
+
+
