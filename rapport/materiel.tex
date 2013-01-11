@@ -298,6 +298,137 @@ rm ARDrone_SDK2_Video_Demo.zip
 make
 \end{lstlisting}
 
+<<<<<<< HEAD
+=======
+We have used the arduino board uno, without any shield or add ons. The electrical schematics is just below.\\
+
+\begin{figure}[!h] 
+\begin{center}
+\includegraphics[width=10cm]{imgs/Capture-1.png}
+\caption{Arduino schematics} 
+\label{img1} 
+\end{center}
+\end{figure} 
+
+Then, to upload a specific code into the board, the arduino application is needed. We used the 1.0.1 version of the application.\\
+
+The code uploaded is :\\
+
+\begin{lstlisting}
+#include <SoftwareSerial.h>
+
+// GPS PINS
+#define SoftrxPin 2
+#define SofttxPin 7
+// SRF PINS
+#define ECHOPIN1 3                            // Pin to receive echo pulse
+#define TRIGPIN1 4                             // Pin to send trigger pulse
+#define ECHOPIN2 5                            // Pin to receive echo pulse
+#define TRIGPIN2 6                             // Pin to send trigger pulse
+  
+// initialisation de la liasion série
+SoftwareSerial gps = SoftwareSerial(SoftrxPin, SofttxPin);
+
+int incomingByte = 0;		// Pour stocker les données entrantes
+// Stocke la chaine GPS
+char line[300] = "";
+// Position dans la chaine
+int index = 0;
+// La chaine recherchée
+char commandeGPR[7] = "$GPRMC";
+// Chaine ok
+int commande_ok = 0;
+
+int i,j = 0;
+
+int readExtractGpsGPRMC(){
+// Envoie des données que quand on en recoit
+  int ret = 0;
+  
+  while (gps.available () > 0)
+    {
+      // On lit le byte:
+      incomingByte = gps.read ();
+      line[index] = incomingByte;
+
+      if (incomingByte == 10)
+	{
+
+	  // Verifie si la chaine est bien de type $GPR
+	  for (int i = 0; i < 4; i++)
+	    {
+	      if (line[i] != commandeGPR[i])
+		{
+		  commande_ok = 1;
+		  break;
+		}
+	    }
+	  //-----------------------------------------------
+
+	  // Si on a récupéré la bonne chaine, on l'affiche
+	  if (commande_ok == 0)
+	    {
+	      for (int pc = 0; pc <= index; pc++)
+		{
+		  Serial.write (line[pc]);
+		}
+             ret = 1;
+	    }
+	  //-------------------------------------------------
+	  index = 0;
+	  commande_ok = 0;
+	}
+      else
+	{
+	  index++;
+	}
+    }
+  return ret;
+}
+
+
+float calculateDistance(int pinEcho, int pinTrig){
+  digitalWrite(pinTrig, LOW);            // Set the trigger pin to low for 2uS
+  delayMicroseconds(2);
+  digitalWrite(pinTrig, HIGH);          // Send a 10uS high to trigger ranging
+  delayMicroseconds(10);
+  digitalWrite(pinTrig, LOW);           // Send pin low again
+  
+  int distance = pulseIn(pinEcho, HIGH); // Read in times pulse
+  return distance/58.0;                  // Calculate distance from time of pulse                    
+}
+
+ 
+void setup(){
+  Serial.begin(9600);// ouvre le port série et règle le debit à 9600 bps
+  gps.begin(9600);// pareil pour les ports digitaux
+  pinMode(ECHOPIN1, INPUT);
+  pinMode(TRIGPIN1, OUTPUT);
+}
+
+void loop(){
+  unsigned long time; 
+  int r = readExtractGpsGPRMC();
+     
+   while(r == 0) {
+     r = readExtractGpsGPRMC();
+   }
+   time = millis();
+   gps.flush();
+   
+   while ((millis() - time) < 600) {  
+     Serial.print("$SRFR,");
+     Serial.println(calculateDistance(ECHOPIN1,TRIGPIN1));
+   }
+}
+
+\end{lstlisting}
+
+Basically, in the main loop, we are extracting GPS strings and srf datas.\\
+
+About GPS data, we just have to extract the GPRMC string of the 6 lines we receive every second.
+
+\section{Android}
 
 \section{Ultrasonic Sensor}
 
