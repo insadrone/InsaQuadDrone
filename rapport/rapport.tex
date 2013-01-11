@@ -1,103 +1,70 @@
-% !TEX encoding = IsoLatin
+\documentclass[10pt,a4paper,titlepage]{report}
 
-\documentclass{report}
+\usepackage[utf8x]{inputenc}
+\usepackage{float}
+\usepackage{titlesec} 
+\usepackage{listings}
+\usepackage{url}
+\usepackage{fullpage}
+%
+
+
+\usepackage{lmodern}
 \usepackage[usenames,dvipsnames]{color}
-%pour le code
-\usepackage{listings}
-
-\usepackage[utf8]{inputenc}
- \usepackage{lmodern}
-\usepackage{listings}
-\lstset{language=C}
- 
- %pour les couleurs !!
- \usepackage[usenames,dvipsnames]{color}
-
 \usepackage{geometry}
 \geometry{scale=0.8, nohead}
 \usepackage{t1enc}
-\usepackage[french]{babel}
 
-\usepackage{url}
+\titleformat{\chapter}[hang]{\bf\huge}{\thechapter}{2pc}{} 
+
+\author{Halloumi Fadi\\\texttt{halloumi@etud.insa-toulouse.fr}\\
+Othacehe Mathieu\\\texttt{othacehe@etud.insa-toulouse.fr}\\
+Volkmann Florian\\\texttt{volkmann@etud.insa-toulouse.fr}\\
+Huynh Duc Ngoc\\\texttt{huynh@etud.insa-toulouse.fr}}
+
+\title{Autonomous target-guided navigation in low obstacle enviroment}
 
 
- %pour les images
-\usepackage{graphicx}
-\definecolor{vert}{rgb}{0.2,0.6,0.4} 
+
+
+%pour la cover page
+\usepackage[pdftex]{graphicx}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+%pour afficher les listing
+% theme listing 1
+%\lstset{language=c,columns=flexible,caption=\lstname,
+%numbers=left,stepnumber=5,numberfirstline=true,
+%rangeprefix=//*,rangesuffix=*//,includerangemarker=false}
+% theme listing 2
+\definecolor{vert}{rgb}{0.2,0.6,0.4}
 \lstset{language=c, breaklines=true, basicstyle=\ttfamily,basicstyle=\scriptsize, keywordstyle=\color{blue}, commentstyle=\color{vert}, stringstyle=\color{red}, identifierstyle=\ttfamily}
 
 
-\makeatletter
-
-\geometry{ hmargin=2cm, vmargin=2cm}
-
-
-\makeatletter
-
-\geometry{ hmargin=2cm, vmargin=2cm}
-
-\def\blurb{%
-Documentation projet Drone}
-
-
-\def\ligne#1{%
-  \hbox to \hsize{%
-    \vbox{\centering #1}}}%
-
-\makeatletter
-\def\maketitle{%
-	\null
-	\vfill
-	\vbox{\centering \Large \textbf{\blurb}}
-	\vspace{15mm}
-	\vbox{\centering \LARGE \textbf{\@title}}
-	\vspace{15mm}
-	\vbox{\centering \@author}
-	\vspace{8mm}
-	\vbox{\centering \@date}
-	\vspace{15mm}
-	\vbox{\centering \textbf{Résumé du projet}}
-	\vspace{5mm}
-	\vbox{%
-		\setlength{\fboxsep}{10pt}
-		\centering \fbox{%
-		\begin{minipage}{0.9\textwidth}
-			\setlength{\parindent}{1cm}
-			\setlength{\parskip}{2ex plus .4ex minus .4ex}                  
-                        Mettre un résumé
-		\end{minipage}%
-	}
-%
-	}
-	\vfill
-	\clearpage
-}
-
-\title{Equipe Pink 2012}
-\author{
-Ngoc-Duc Huynh \texttt{<volkmann@etud.insa-toulouse.fr>}\\
-Florian Volkmann \texttt{<volkmann@etud.insa-toulouse.fr>}\\
-Fahdi Halloumi \texttt{<halloumi@etud.insa-toulouse.fr>}\\
-Mathieu Othacéhé \texttt{<othacehe@etud.insa-toulouse.fr>}}
-\date{5ème année SEC}
-
+%\fontfamily{lmss}
 \begin{document}
 
-\maketitle
-\tableofcontents
+\input{./title.tex} %coverpage
+\maketitle %titlepage
+\begin{abstract} %abstract page
+Being fifth year students at INSA Toulouse, we saw that many visitors had difficulties to find the Electrical and Computer Engineering Department (DGEI) and they were late for the meeting. At the end of our study in Critical and Embedded System, we have an opportunity to work with a drone so we decided to make our project more useful. Our Pink team is working on developing a UAV that can go to DGEI wherever it was by searching a signal power of an Xbee emitter (or a GPS).
+\end{abstract}
 
+\tableofcontents %table of content
+\clearpage
 
-\nocite{*}
 
 \chapter{Introduction}
 
-\chapter{SDD}
-\input{sdd}
-\chapter{SRS}
-\input{srs}
-\chapter{STD}
-\input{std}
+\chapter{General project presentation}
+\input{structure}
+\chapter{Hardware considerations}
+\input{materiel}
+\chapter{Software producted}
+\input{logiciel}
+\chapter{Final results}
+\input{resultat}
 
 \chapter{Conclusion}
 
 \end{document}
+
