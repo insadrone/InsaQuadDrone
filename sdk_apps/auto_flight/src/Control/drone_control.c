@@ -404,7 +404,7 @@ C_RESULT down(void *arg) {
     if (arg != NULL){
 	gaz = -(float)((mov*)arg)->power / 10.0;
     }
-    printf("GO UP\n");
+    printf("GO DOWN\n");
     drone_state.flag = 1;
     drone_state.gaz = gaz;
     return C_OK;
