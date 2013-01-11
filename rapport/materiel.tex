@@ -35,7 +35,7 @@ The hardware reference is as follow:
 \end{itemize}
 
 \subsection{Software}
-The board has an embedded Linux with these reference : //
+The board has an embedded Linux with these reference : \\
 \begin{itemize}
 \item[*] Linux myhost 2.6.27.47-parrot-01227-g93dde09 \#1 preempt Fri Jul 2 15:23:06 CEST 2010 armv5tejl GNU/Linux 
 \item[*] Linux 2.6.32 kernel: Linux uclibc 2.6.32.9-g0d605ac \#1 preempt Fri Apr 6 12:01:59 CEST 2012 armv7l GNU/Linux 
@@ -68,9 +68,9 @@ We added multiple modules in order to be able to communicate with usb port:
 \item[-] ftdi\_sio
 \end{itemize}
 
-you need to cross-compile these modules you can use the following step :
+you need to cross-compile these modules you can use the following steps :
 \begin{enumerate}
-\item Download an ARM Cross-compiler you can find one on the website of Mentor Graphics (successor of Code sourcery) 
+\item Download an ARM Cross-compiler you can find one on the website of Mentor Graphics (successor of Code sourcery)\\ 
 \url{http://www.mentor.com/embedded-software/sourcery-tools/sourcery-codebench/editions/lite-edition/arm-gnu-linux}
 \item Install the cross-compiler :
 
@@ -82,17 +82,225 @@ you need to cross-compile these modules you can use the following step :
 \begin{lstlisting}
 #: /opt/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_GNU_Linux/bin/arm-none-linux-gnueabi-gcc -march=armv7-a toto.c -o toto.elf
 \end{lstlisting}
-
+\item Download and unzip Linux kernel: 
+\begin{lstlisting}
+#: wget --no-check certificate https://devzone.parrot.com/wiki/oss-ardrone2/Listing
+#: tar zvxf linux.tar.gz
+#: telnet 192.168.1.1
+#: uname -a
+#>  2.6.32.9-g0d605ac
+\end{lstlisting}
+Edit the Makefile in the root of Linux directory. The first fourth lines are VERSION (2), PATCHLvEL,  
+SUBLEvEL (32) et EXTRAVERSION (.9).
+Replace EXTRAVERSION = .9 by EXTRAVERSION = .9-g0d605ac to have the same version as the embedded linux.
+\item Configurate the kernel :
+\begin{lstlisting}
+#: cd linux
+#: cp kernel.config .config
+#: make ARCH=arm menuconfig
+\end{lstlisting}
+Using the tool menuconfig , go to Device Drivers|USB Support . Tag the module as (M) in the corrosponding  ligne  USB Serial Converter 
+support with the space key and then press enter to see the subdrivers. Tag (M) the ligne USB FTDI Single Port Serial Driver, finally, exit and save the file .config .
+\item From the directory linux, compile the module :
+\begin{lstlisting}
+#: make ARCH=arm CROSS_COMPILE=/opt/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_GNU_Linux/bin/arm-none-linux-gnueabi- modules
+\end{lstlisting}
+\item Get  the compiled modules
+The compiled modules are in the linux/drivers/usb/serial directory
+\begin{lstlisting}
+#: cp drivers/usb/serial/usbserial.ko ~
+#: cp drivers/usb/serial/ftdi_sio.ko ~
+\end{lstlisting}
+\item check the installed modules
+If you have doubt on the installed modules, Before to send them, you can check using the following command:
+\begin{lstlisting}
+#: /opt/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_GNU_Linux/bin/arm-none-linux-gnueabi-readelf -A ftdi_sio.ko
+\end{lstlisting}
+you should have probably have somthing like this output :
+\begin{lstlisting}
+File Attributes
+  Tag_CPU_name: ``7-A''
+  Tag_CPU_arch: v7
+  Tag_CPU_arch_profile: Application
+  Tag_ARM_ISA_use: Yes
+  Tag_THUMB_ISA_use: Thumb-2
+  Tag_ABI_PCS_wchar_t: 4
+  Tag_ABI_FP_denormal: Needed
+  Tag_ABI_FP_exceptions: Needed
+  Tag_ABI_FP_number_model: IEEE 754
+  Tag_ABI_align_needed: 8-byte
+  Tag_ABI_align_preserved: 8-byte, except leaf SP
+  Tag_ABI_enum_size: int
+  Tag_ABI_optimization_goals: Aggressive Size
+  Tag_CPU_unaligned_access: v6
+  Tag_DIV_use: Not allowed
+\end{lstlisting}
+if the CPU\_name is 7-a, everthings is ok !
+\item Loading the modules on the UAV
+You can put the modules on the drone using ftp :
+\begin{lstlisting}
+#: cd ~
+#: ftp 192.168.1.1
+#: mput *.ko
+#: exit
+\end{lstlisting}
+\item Mount the modules 
+The modules are in the /data/video and the you can load them dynamically :
+\begin{lstlisting}
+#: telnet 192.168.1.1
+#: cd /data/video
+#: insmod usbserial ou insmod usbserial.ko
+#: insmod ftdi_sio ou insmod ftdi_sio.ko
+\end{lstlisting}
+if needed you can use the two command lsmod to list the loaded modules and rmmod to remove a module.
 \end{enumerate}
 
 \subsection{Development}
+\subsubsection{Install}
+To install the SDK of the parrot please use the following script :
+\begin{lstlisting}
+#Create A project Directory
+mkdir ~/Document/Projet_SEC && cd 
+#Download the  SDK
+wget --no-check certificate https://projects.ardrone.org/attachments/download/434/ARDrone_SDK_2_0.tar.gz
+#Decompress the archive
+tar -zxvf ARDrone_SDK_2_0.tar.gz
+rm ARDrone_SDK_2_0.tar.gz
+#Set the enviromment variables (Update the  Enviroment Variable and downloading the required packages)
+source ARDrone_SDK_2_0/ARDroneLib/Soft/Build/check_dependencies.sh
+#Test the configuration ( you will see ``Ok'' at the end if everthings is ok)
+./ARDrone_SDK_2_0/ARDroneLib/Soft/Build/check_dependencies.sh
+#Prepare the build for Linux (warning do NOT remove the spaces)
+perl -p -i -e 's/USE_LINUX            = no/USE_LINUX            = yes/' ARDrone_SDK_2_0/ARDroneLib/Soft/Build/custom.makefile
+#Compile the SDK
+cd ARDrone_SDK_2_0/ARDroneLib/Soft/Build/ && make
+#If New Curses is not installed you should do it
+apt-get install libncurses5*
+#Compile the examples
+cd ../../../Examples/Linux/ && make
+#Checking If examples Work (do not forget to connect to the drone wifi)
+./Build/Release/ardrone_navigation
+#Memorising SDK Path maybe you should put it in the .bashrc to avoid doing it every time
+export ARDRONE_SDK=/home/<myuser>/Documents/Projet_SEC/ARDrone_SDK_2_0
+\end{lstlisting}
+\subsubsection{Connect to the drone:}
+You could easiely use the the telnet commandline :
+\begin{lstlisting}
+telnet 192.168.1.1
+\end{lstlisting}
+\subsubsection{Change the configuration}
+To change the default parameters used by the uav edit the file as follow :
+\begin{lstlisting}
+emacs -nw /data/config.ini
+\end{lstlisting}
 
-\section{Arduino}
+\subsubsection{Building An example}
+The typic application structure is the following :\\
+\includegraphics{imgs/structure_projet.png}
 
-\section{Android}
+you can use the makefile sample :
+\begin{lstlisting}
+SDK_PATH:=$(ARDRONE_SDK)/ARDroneLib
+PC_TARGET=yes
+USE_LINUX=yes
+
+ifdef MYKONOS
+   include $(ARDRONE_CUSTOM_CONFIG)
+   include $(ARDRONE_BUILD_CONFIG)
+else
+   include $(SDK_PATH)/Soft/Build/custom.makefile
+   include $(SDK_PATH)/Soft/Build/config.makefile
+endif
+
+ifeq "$(RELEASE_BUILD)" "yes"
+   ARDRONE_TARGET_DIR=$(shell pwd)/bin
+else
+   ARDRONE_TARGET_DIR=$(shell pwd)/bin
+endif
+
+TARGET=key_test
+
+SRC_DIR:=$(shell pwd)/src
+
+# Define application source files
+GENERIC_BINARIES_SOURCE_DIR:=$(SRC_DIR)
+
+GENERIC_BINARIES_COMMON_SOURCE_FILES+=			\
+   Navdata/navdata.c    \
+   Video/video_stage.c   \
+   keyboard.c
+
+GENERIC_INCLUDES+=					\
+	$(SRC_DIR) \
+	$(LIB_DIR) \
+	$(SDK_PATH)/Soft/Common \
+	$(SDK_PATH)/Soft/Lib
+
+GENERIC_TARGET_BINARIES_PREFIX=
+
+GENERIC_TARGET_BINARIES_DIR=$(ARDRONE_TARGET_DIR)
+
+GENERIC_BINARIES_SOURCE_ENTRYPOINTS+=			\
+   ardrone_testing_tool.c
+
+GENERIC_INCLUDES:=$(addprefix -I,$(GENERIC_INCLUDES))
+
+GENERIC_LIB_PATHS=-L$(GENERIC_TARGET_BINARIES_DIR)
+GENERIC_LIBS=-lpc_ardrone -lgtk-x11-2.0 -lrt
+
+SDK_FLAGS+="USE_APP=yes"
+SDK_FLAGS+="APP_ID=key_test"
+
+export GENERIC_CFLAGS
+export GENERIC_LIBS
+export GENERIC_LIB_PATHS
+export GENERIC_INCLUDES
+export GENERIC_BINARIES_SOURCE_DIR
+export GENERIC_BINARIES_COMMON_SOURCE_FILES
+export GENERIC_TARGET_BINARIES_PREFIX
+export GENERIC_TARGET_BINARIES_DIR
+export GENERIC_BINARIES_SOURCE_ENTRYPOINTS
+
+# Bug fix ...
+export GENERIC_LIBRARY_SOURCE_DIR=$(GENERIC_BINARIES_SOURCE_DIR)
+
+
+.PHONY: $(TARGET) build_libs
+
+all: build_libs $(TARGET)
+
+$(TARGET):
+	@$(MAKE) -C $(SDK_PATH)/VP_SDK/Build $(TMP_SDK_FLAGS) $(SDK_FLAGS) $(MAKECMDGOALS) USE_LINUX=yes
+	mv $(ARDRONE_TARGET_DIR)/ardrone_testing_tool $(TARGET)
+	mv $(TARGET) $(ARDRONE_TARGET_DIR)/
+
+$(MAKECMDGOALS): build_libs
+	@$(MAKE) -C $(SDK_PATH)/VP_SDK/Build $(TMP_SDK_FLAGS) $(SDK_FLAGS) $(MAKECMDGOALS) USE_LINUX=yes
+
+build_libs:
+	@$(MAKE) -C $(SDK_PATH)/Soft/Build $(TMP_SDK_FLAGS) $(SDK_FLAGS) $(MAKECMDGOALS) USE_LINUX=yes
+\end{lstlisting}
+
+You can test the application using these commands:
+\begin{lstlisting}
+#Open a new shell where you wich redirect the output of the example and check its id using **ps -p $**
+# here in example the id is 5
+./keyboar_control >> /dev/pts/5
+\end{lstlisting}
+
+\subsubsection{Building a video example}
+To build or understand video you can use this example :
+\begin{lstlisting}
+cd $ARDRONE_SDK/Examples/Linux
+wget --no-check-certificate https://projects.ardrone.org/attachments/download/466/ARDrone_SDK2_Video_Demo.zip
+unzip ARDrone_SDK2_Video_Demo.zip
+rm ARDrone_SDK2_Video_Demo.zip
+make
+\end{lstlisting}
+
 
 \section{Ultrasonic Sensor}
-=======
+
 \section{Bluetooth}
 
 This part explains how to connect and read data from an android smartphone that sends information via bluetooth. ShareGPS, an application running on the phone is sending its GPS coordinate to the computer. The aim of the document is to give the process to get this coordinate.\\
@@ -129,4 +337,4 @@ Third step: read data\\
   \item You can also use a self-made program
 \end{itemize}
 
-Source: \url{http://www.thinkwiki.org/wiki/How_to_setup_Bluetooth}
+Source: \url{http://www.thinkwiki.org/wiki/How\_to\_setup\_Bluetooth}
