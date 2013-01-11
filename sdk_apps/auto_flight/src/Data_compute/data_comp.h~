@@ -22,7 +22,6 @@ typedef struct f_data_t {
 PROTO_THREAD_ROUTINE(auto_control, data);
 
 extern int auto_ready;
-extern int auto_ready_o;
 extern int target_ready;
 extern FILE *redir_sortie;
 

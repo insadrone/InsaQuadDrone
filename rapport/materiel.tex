@@ -92,3 +92,41 @@ you need to cross-compile these modules you can use the following step :
 \section{Android}
 
 \section{Ultrasonic Sensor}
+=======
+\section{Bluetooth}
+
+This part explains how to connect and read data from an android smartphone that sends information via bluetooth. ShareGPS, an application running on the phone is sending its GPS coordinate to the computer. The aim of the document is to give the process to get this coordinate.\\
+
+First step: with the smartphone\\
+
+\begin{itemize}
+ \item Turn on the bluetooth and the GPS
+ \item Launch ShareGPS and share coordinate via bluetooth
+ \item Make the bluetooth visible by other devices
+\end{itemize}
+
+Second step: with the computer on Linux\\
+
+\begin{itemize}
+   \item  Turn on the bluetooth and open a terminal (you may need to be root)
+   Scan devices with: ``hcitool scan''
+   -> Write down the MAC address of the corresponding device
+   \item Find the good channel which gives GPS coordinate with: ``sdptool records MAC\_ADDR''
+   -> This command displays all channels and their functions
+   -> Look for the one called ``ShareGPS'' and write down the corresponding channel
+   \item Create the connection with: ``rfcomm bind X MAC\_ADDR CH''
+    -> X: positive integer corresponding to the rfcomm you want to bind
+    -> MAC\_ADDR: MAC address of the smartphone
+    -> CH: channel of the ShareGPS application
+\end{itemize}
+
+You can now check that /dev/rfcommX exists. The last step is to read data.
+To kill it use the command ``rfcomm release rfcommX'' or ``rfcomm release all''.\\
+
+Third step: read data\\
+\begin{itemize}
+  \item Using PuTTY: connect via serial to /dev/rfcommX with a 9600 baudrate
+  \item You can also use a self-made program
+\end{itemize}
+
+Source: \url{http://www.thinkwiki.org/wiki/How_to_setup_Bluetooth}

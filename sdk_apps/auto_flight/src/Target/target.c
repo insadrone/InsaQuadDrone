@@ -42,6 +42,15 @@ void turn_angle2(float target_angle, float tol) {
     sauv_ndata = get_ndata();
     printf("tourne [%f] hasta [%f]!\n\n",sauv_ndata.psi_current,angle_sup);
     usleep(100);
+
+
+  if (target_angle > angle_360) {
+     (target_angle - angle_360) < 180 ? send_order(turn_left,NULL) : send_order(turn_right,NULL);
+  } else {
+    (angle_360 - target_angle) < 180 ? send_order(turn_right,NULL) : send_order(turn_left,NULL);
+  }
+
+
   }
   
   send_order(stop,NULL);
@@ -96,20 +105,22 @@ void go_target() {
 	
       turn_angle2(angle ,5.0);
 		
-      if (distance > 10.0){
+      if (distance > 5.0){
 	printf("La distance restante est %f\n",distance);
 	fprintf(redir_sortie,"La distance restante est %f\n",distance);
 	fflush(redir_sortie);
-	send_order(forward,NULL);
+	//send_order(forward,NULL);
 	speed.power = 3;
-	speed.distance = distance;
-	speed.time = d2time(speed.power,speed.distance);
+	//speed.distance = distance/2;
+	//speed.time = d2time(speed.power,speed.distance);
 	send_order(forward,(void *)&speed);
+	sleep(3);
+	//sleep(4);
       } else { 
 	send_order(land,NULL); 
 	printf("LANDING \n");
 	mission = 1;
-	exit(0);
+	//exit(0);
       }	
     }
   }
@@ -209,8 +220,10 @@ DEFINE_THREAD_ROUTINE(target, data) {
 
   while (1) {
     if (target_ready) {
-      //go_target();
-      test_target2();
+      //printf("CONVERGENCE\n");
+      go_target();
+      //go_target2();
+      //test_target2();
       usleep(100);
     }
     usleep(100);

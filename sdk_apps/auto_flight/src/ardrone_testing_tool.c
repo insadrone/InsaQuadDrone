@@ -56,7 +56,7 @@ C_RESULT ardrone_tool_init_custom(void)
   START_THREAD( avoidance, NULL );
   START_THREAD( target, NULL );
   START_THREAD( gps_target, NULL );
-  START_THREAD( data_comp, NULL );
+  // START_THREAD( data_comp, NULL );
   
   return C_OK;
 }
@@ -72,7 +72,7 @@ C_RESULT ardrone_tool_shutdown_custom(void)
   JOIN_THREAD( avoidance );
   JOIN_THREAD( target );
   JOIN_THREAD( gps_target );
-  JOIN_THREAD( data_comp );
+  //JOIN_THREAD( data_comp );
 
   /* Unregistering for the current device */
   //ardrone_tool_input_remove( &gamepad );

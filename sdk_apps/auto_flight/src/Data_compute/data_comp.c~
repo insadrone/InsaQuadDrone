@@ -15,7 +15,6 @@
 
 fdata sauv_ndata;
 int auto_ready = 0;
-int auto_ready_o = 0;
 int target_ready = 0;
 FILE *redir_sortie = NULL;
 
@@ -63,8 +62,6 @@ fdata get_ndata() {
 void control() {
 
   char c;
-  mov speed;
-  speed.power = 1;
 
   while (1) {
     usleep(100000);
@@ -72,27 +69,16 @@ void control() {
     printf("%c\n",c);
     switch(c){
     case 'f':
-      //small_move(forward);
-      send_fast_order(forward,(void *)&speed);
+      small_move(forward);
       break;
     case 'b':
-      //small_move(backward);
-      send_fast_order(backward,(void *)&speed);
+      small_move(backward);
       break;
     case 'u':
       small_move(up);
       break;
     case 'd':
       small_move(down);
-      break;
-    case 'l':
-      small_move(turn_left);
-      break;
-    case 'r':
-      small_move(turn_right);
-      break;
-    case 's':
-      small_move(stop);
       break;
     case 'o':
       //small_move(left);
@@ -108,10 +94,7 @@ void control() {
     case 'a':
       auto_ready = 1;
       printf("avoidance launched\n");
-      break;
-    case 'p':
-      auto_ready_o = 1;
-      printf("avoidance only launched\n");
+      //small_move(turn_left);
       break;
     case 'x':
       //small_move(turn_right);
