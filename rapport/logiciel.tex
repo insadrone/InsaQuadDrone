@@ -569,7 +569,155 @@ Let's describe the second algorithm :\\
 
 \section{GPS algorithms}
 
+\subsection{GPRMC string}
+After receive GPRMC strings sent from UAV, at the ground station, we can extract some necessaire informations such as coordinates GPS : latitude et longitude and data status.\\
+
+The GPRMC sentence consists of twelve comma-delimited words:\\
+
+\begin{verbatim}
+$GPRMC,hhmmss.ss,A,llll.ll,a,yyyyy.yy,a,x.x,x.x,ddmmyy,x.x,a*hh
+1    = UTC of position fix
+2    = Data status (V=navigation receiver warning)
+3    = Latitude of fix
+4    = N or S
+5    = Longitude of fix
+6    = E or W
+7    = Speed over ground in knots
+8    = Track made good in degrees True
+9    = UT date
+10   = Magnetic variation degrees (Easterly var. subtracts from true course)
+11   = E or W
+12   = Checksum
+\end{verbatim}
+
+First, we check if Data status is valide (A) or not (V). If status is not valide, coordinate GPS will be set -1. Then we only interest in Latiude (3) and Longitude(5) data. We know also that the data of (4) and (6) are always N and E so the coordinate GPS is positive. For others informations, we don’t count in.\\
+
+\begin{lstlisting}
+
+void extract_coord( char str_gps[], struct gps_coordinate *point )
+{
+ char delims[] = ",";
+ char *result;
+ result = malloc(sizeof(char));
+ int j,i = 0;
+ result = strtok( str_gps, delims );
+
+ char *degree ;
+ degree = malloc(sizeof(char));
+ char *minute ;
+ minute = malloc(sizeof(char));
+
+ while( i<6 )
+   {
+     i++;
+     result = strtok( NULL, delims );                        
+     //printf( "result is %d \"%s\"\n", i, result );                   
+     if (!strcmp(result, "V") )//sortie la boucle quand GPS ne fonctionne pas
+    { i = 7;
+      point->longitude = -1.0;   
+      point->latitude =  -1.0;   
+      printf( "coordinates undetermined \n" );
+    }
+
+     if (i==3) //effecter la valeur de latitude
+    {   
+      for (j=0;j<2;j++) //extract degree
+        {
+          degree[j] = result[j];    
+        }
+
+      while (j< strlen(result)) //extract minute
+        {
+          minute[j-2] = result[j];
+          j++;       
+        }
+      
+      point->latitude = atof(degree) + atof(minute)/60.0 ;    /      if (point->latitude > 90.0 || point->latitude < -90.0) {
+        point->latitude = -1.0;
+        point->longitude = -1.0;
+        
+      }
+      //printf( "latitude %f\n", point->latitude);
+    }
+
+     if (i==5) //effecter la valeur de longitude
+    {   
+      for (j=0;j<3;j++) //extract degree
+        {
+          degree[j] = result[j];    
+        }
+
+      while (j< strlen(result)) //extract minute
+        {
+          minute[j-3] = result[j];
+          j++;       
+        }
+   
+      point->longitude = atof(degree) + atof(minute)/60.0 ; //convert into degree
+      if (point->longitude > 180.0 || point->longitude < -180.0) {
+        point->latitude = -1.0;
+        point->longitude = -1.0;
+      }
+      
+          }            
+   }
+}
+\end{lstlisting}
+
+\subsection{Navigation}
+
+\subsubsection{Bearing}
+
+Bearing is the angle measured in a clockwise direction from the north line.
+Thanks to this, we can know the direction to reach the target. The formula is given :
+
+$$ \theta = atan2( sin(\Delta\lambda).cos(\phi2), cos(\phi1).sin(\phi2) − sin(\phi1).cos(\phi2).cos(\Delta\lambda) )$$
+
+where $ \phi $  is latitude, $ \lambda $ is longitude.\\
+
+\begin{lstlisting}
+
+//calcul direction // North
+
+y = sin(dest->longitude - depart->longitude) * cos(dest->latitude);
+
+x = cos(depart->latitude)*sin(dest->latitude) - sin(depart->latitude)*cos(dest->latitude)*cos(dest->longitude - depart->longitude);
+
+*angle = (atan2(y,x) * 180.0/M_PI);
+
+\end{lstlisting}
+
+\subsubsection{Distance}
 
 
+We uses the ‘haversine’ formula to calculate the distance between two points – that is the shortest distance over the earth’s surface.
 
+Haversine formula:
 
+$$ a = sin^2(\Delta\phi/2) + cos(\phi1).cos(\phi2).sin^2(\Delta\lambda/2) $$
+
+$$ c = 2.atan(\sqrt{a}, \sqrt{(1−a)})$$ 
+
+$$ d = R.c $$
+
+where $ \phi $ is latitude,
+
+$ \lambda $ is longitude
+
+\begin{lstlisting}
+   // calcul distance
+      x = sin((dest->latitude - depart->latitude)/2) * sin((dest->latitude - depart->latitude)/2) + sin((dest->longitude - depart->longitude)/2)*sin((dest->longitude - depart->longitude)/2) * cos(depart->latitude)*cos(dest->latitude);
+     y = 2 * atan2(sqrt(x),sqrt(1-x));
+     *distance = RAYON *y;
+\end{lstlisting}
+
+\begin{figure}[!h] 
+\begin{center}
+\includegraphics[width=10cm]{imgs/img.png}
+\caption{Bearing angle} 
+\label{img1} 
+\end{center}
+\end{figure} 
+
+The point O is position of UAV, if we want to go to the point Q, we must turn to left an angle of 60° relative to the north. According to the formula above, it give us a negative angle -60° that means the point of destination is on the left. Another case, we have an angle of 65° on the right if we want to reach to the point P.
+And the Haversine formula will also give us the distance of OQ or OP.

@@ -115,15 +115,15 @@ The code uploaded is :\\
 #define ECHOPIN2 5                            // Pin to receive echo pulse
 #define TRIGPIN2 6                             // Pin to send trigger pulse
   
-// initialisation de la liasion série
+// initialisation de la liasion serie
 SoftwareSerial gps = SoftwareSerial(SoftrxPin, SofttxPin);
 
-int incomingByte = 0;		// Pour stocker les données entrantes
+int incomingByte = 0;		// Pour stocker les donnees entrantes
 // Stocke la chaine GPS
 char line[300] = "";
 // Position dans la chaine
 int index = 0;
-// La chaine recherchée
+// La chaine recherchee
 char commandeGPR[7] = "$GPRMC";
 // Chaine ok
 int commande_ok = 0;
@@ -131,7 +131,7 @@ int commande_ok = 0;
 int i,j = 0;
 
 int readExtractGpsGPRMC(){
-// Envoie des données que quand on en recoit
+// Envoie des donnees que quand on en recoit
   int ret = 0;
   
   while (gps.available () > 0)
@@ -154,7 +154,7 @@ int readExtractGpsGPRMC(){
 	    }
 	  //-----------------------------------------------
 
-	  // Si on a récupéré la bonne chaine, on l'affiche
+	  // Si on a recupere la bonne chaine, on l'affiche
 	  if (commande_ok == 0)
 	    {
 	      for (int pc = 0; pc <= index; pc++)
@@ -189,7 +189,7 @@ float calculateDistance(int pinEcho, int pinTrig){
 
  
 void setup(){
-  Serial.begin(9600);// ouvre le port série et règle le debit à 9600 bps
+  Serial.begin(9600);// ouvre le port serie et regle le debit a 9600 bps
   gps.begin(9600);// pareil pour les ports digitaux
   pinMode(ECHOPIN1, INPUT);
   pinMode(TRIGPIN1, OUTPUT);
@@ -216,6 +216,25 @@ void loop(){
 Basically, in the main loop, we are extracting GPS strings and srf datas.\\
 
 About GPS data, we just have to extract the GPRMC string of the 6 lines we receive every second.
+We need to test the beginning of the string. If is equal to "\$GPRMC" string, we store the string and send it via 
+serial connection to the UAV.\\
+
+To catch SRF data, it is necessary to read the datasheet, and do the following tasks :\\
+
+\begin{enumerate}
+\item Set the trigger pin to low for 2uS
+\item Send a 10uS high to trigger ranging
+\item Read the time at high level, it corresponds to the duration of ultrasonic roundtrip.
+\item Dividing this duration by 58, we obtain the distance to obstacle
+\end{enumerate}
+
+We have to send this distance to the UAV, like for the GPS strings.\\
+
+Using separately ultrasonic sensors and GPS works perfectly well. However it is difficult to use both components at the same time. The GPS extraction is using SoftwareSerial class and all incoming data are stored in a buffer of this class. Data's are written every 1 second, and if we are listening this buffer all the time (except for extraction), this buffer won't overflow. But, if data are written in this buffer while we are capturing ultrasonic wave, the writting will overflow the buffer and cause the loss of some information.\\
+
+It is impossible to multithread this program, so we have to schedule manually the execution of GPS and sensor listening. We know GPS data are incoming every second, and the execution of gps extraction last 100 ms, so we dedicate 600 ms to ultrasonic listening, and then we wait for GPS data to arrive.\\
+
+This solution is not very satisfying because we take a margin of 300ms, and we don't have SRF data during 400ms, but we didn't find a better way to combine GPS and SRF sensors.\\
 
 \section{Android}
 
