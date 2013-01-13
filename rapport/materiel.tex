@@ -554,6 +554,8 @@ Third step: read data\\
 \begin{itemize}
   \item Using PuTTY: connect via serial to /dev/rfcommX with a 9600 baudrate
   \item You can also use a self-made program
+Note that we have built an automatic script which do all the tasks for you (configuring the bluetooth, reading data and sending them by UDP). You can find it in the folder “bluetooth” located in the roots of our repository. You will need to change the MAC address of the device in the file “config\_bluetooth\_connexion.h” and if you want to change the IP address where data will be sent you need to modify the main function in the file “Get\_GPS\_data\_bluetooth.c”.\\
+To compile you just need to type “make” in the folder then “sudo ./test” to execute it.
 \end{itemize}
 
 Source: \url{http://www.thinkwiki.org/wiki/How\_to\_setup\_Bluetooth}

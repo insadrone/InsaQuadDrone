@@ -54,8 +54,11 @@ Being fifth year students at INSA Toulouse, we saw that many visitors had diffic
 
 
 \chapter{Introduction}
-Our team has been in charge to develop a guide to help people find their way at INSA. Our drone is able to converge to a target thanks to GPS coordinates. It is naturally able to fly in autonomy without human interactions.
-// autre doc, pres plan
+Our team has been in charge to develop a guide to help people find their way at INSA. Our drone is able to converge to a target thanks to GPS coordinates. It is naturally able to fly in autonomy without human interactions and it avoids obstacles like trees, cars and human beings.
+
+This document explains how to use our work for people willing to set up our experiments or just to take some parts of our project for theirs. It could also be a good starting point to those who would like to continue and improve this project.
+
+This document is divided in fours parts. Firstly, a general presentation of the project will be presented with its goal and all the relative documents produced that can help and complete this one. In the second part will be explained all that is in relation with the hardware and how to integrate and use it. Then the software part will be described with the architecture, codes that have been made and libraries you need to install. Before concluding results obtained will be detailed.
 
 \chapter{General project presentation}
 \input{structure}
@@ -67,7 +70,15 @@ Our team has been in charge to develop a guide to help people find their way at 
 \input{resultat}
 
 \chapter{Conclusion}
-Conclusion
+In conclusion we achieved our main goal which was to fly from a point A to B autonomously and by avoiding obstacles like trees, cars and human being. The second purpose was to promote our department and has also been successful.
+
+Nonetheless and because of the lack of time this project is improvable in many points. Algorithms can be made more efficient and reliable. For example, the convergence alone works very well but much less with the obstacle avoidance algorithm.
+
+Here are some ideas to improve and continue this project. Building can be integrated in the avoidance code by setting their GPS coordinates in memory and consider them as areas the drone can’t fly.
+
+We also wanted to be very precise concerning the landing on target by finishing the convergence with the camera because of the uncertainty of position given by the GPS. For example the drone can detect tags at approximately eight meters. Thus the drone can converge to the target by looking for a tag. Then another tag on the ground can be laying in front of the other tag so the drone can precisely land on it thanks to its bottom camera.
+
+To finish we have also programed a PID correction that we did not have time to use. It can be implemented to regulate the trajectory of the drone and the positioning of the drone to have tags in the center of its camera.
 
 \end{document}
 

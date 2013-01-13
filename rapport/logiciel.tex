@@ -721,3 +721,48 @@ $ \lambda $ is longitude
 
 The point O is position of UAV, if we want to go to the point Q, we must turn to left an angle of 60° relative to the north. According to the formula above, it give us a negative angle -60° that means the point of destination is on the left. Another case, we have an angle of 65° on the right if we want to reach to the point P.
 And the Haversine formula will also give us the distance of OQ or OP.
+
+\section{Data Avereaging Algorithm}
+
+To avoid big errors or prevent incoherent sensor values given by the ultrasonic sensor and the GPS we decided to calculate the average of the last X previous values (X is a number that can be modified in the header file). Moreover this function checks new incoming values by comparing them with the average plus or minus a tolerance that can also be chosen.
+
+This function uses a circular array to store data and calculate the average. It is created and initialised with all values equal to -1 by using the function init.
+
+\section{PID Control Implementation}
+The implementation of a PID controller is very simple. The function used the classic equation:
+\begin{equation}
+commande(n) = P[erreur(n)+TECHsommeerreurI+D(erreur(n)-erreur(n-1))]
+\end{equation}
+
+which is equivalent to:
+
+$commande(n) =commande(n-1)+P(erreur(n)-erreur(n-1))+ITECHerreur(n)+DTECH(erreur(n)-2*erreur(n-1)+erreur(n-2))$
+
+
+with $erreur = consigne - val\_capt$. Consigne is the the value to reach and $val\_capt$ is the current value given by the sensor. These two variables are the parameters of the function.
+
+P, D, I and T\_ech are constants defined in the headers.
+
+The function return commande which is the command to apply to your system.
+
+Moreover three global variables need to be used to store previous values which are $commande(n-1)$, $erreur(n-1)$ and $erreur(n-2)$. They can be reset by calling the function init. Note that this function has to be called once before the first use of the PID.
+
+Here is the code of these functions:
+\begin{lstlisting}
+void init_pid(void) {
+ u_1 = 0;
+ e_2 = 0;
+ e_1 = 0;
+}
+
+double calcul_commande_pid(double consigne, double val_capt) {
+ double erreur, commande;
+ erreur = consigne - val_capt;
+ commande = u_1 + P * (erreur - e_1) + I * T_ECH * erreur + D / T_ECH * (erreur - 2 * e_1 + e_2);
+ // update variables
+ u_1 = commande;
+ e_2 = e_1;
+ e_1 = erreur;
+ return commande;
+}
+\end{lstlisting}
