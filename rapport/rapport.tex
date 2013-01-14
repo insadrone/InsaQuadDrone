@@ -46,7 +46,7 @@ Huynh Duc Ngoc\\\texttt{huynh@etud.insa-toulouse.fr}}
 \input{./title.tex} %coverpage
 \maketitle %titlepage
 \begin{abstract} %abstract page
-Being fifth year students at INSA Toulouse, we saw that many visitors had difficulties to find the Electrical and Computer Engineering Department (DGEI) and they were late for the meeting. At the end of our study in Critical and Embedded System, we have an opportunity to work with a drone so we decided to make our project more useful. Our Pink team is working on developing a UAV that can go to DGEI wherever it was by searching a signal power of an Xbee emitter (or a GPS).
+Being fifth year students at INSA Toulouse, we saw that many visitors had difficulties to find the Electrical and Computer Engineering Department (DGEI) and they were late for their lectures. At the end of our study in Critical and Embedded System, we have an opportunity to work with a drone so we decided to make our project more useful. Our Pink team is working on developing a UAV that can go to DGEI wherever it was.
 \end{abstract}
 
 \tableofcontents %table of content
@@ -54,11 +54,11 @@ Being fifth year students at INSA Toulouse, we saw that many visitors had diffic
 
 
 \chapter{Introduction}
-Our team has been in charge to develop a guide to help people find their way at INSA. Our drone is able to converge to a target thanks to GPS coordinates. It is naturally able to fly in autonomy without human interactions and it avoids obstacles like trees, cars and human beings.
+Our team has been in charge of developing a guide to help people find their way at INSA. Our drone is able to converge to a target using GPS coordinates. It's naturally able to fly autonomously without human interactions and it avoids obstacles like trees, cars and human beings.
 
 This document explains how to use our work for people willing to set up our experiments or just to take some parts of our project for theirs. It could also be a good starting point to those who would like to continue and improve this project.
 
-This document is divided in fours parts. Firstly, a general presentation of the project will be presented with its goal and all the relative documents produced that can help and complete this one. In the second part will be explained all that is in relation with the hardware and how to integrate and use it. Then the software part will be described with the architecture, codes that have been made and libraries you need to install. Before concluding results obtained will be detailed.
+This document is divided in fours parts. Firstly, a general presentation of the project will be presented with its goals and all the relative documents produced that can help, and complete this one. In the second part we will explain all stuffs that are in related to the hardware, how to integrate and of course use it. Then the software part will be described with the architecture, codes that have been made and libraries you need to install. Before concluding results obtained will be detailed.
 
 \chapter{General project presentation}
 \input{structure}
@@ -70,13 +70,13 @@ This document is divided in fours parts. Firstly, a general presentation of the 
 \input{resultat}
 
 \chapter{Conclusion}
-In conclusion we achieved our main goal which was to fly from a point A to B autonomously and by avoiding obstacles like trees, cars and human being. The second purpose was to promote our department and has also been successful.
+In conclusion we achieved our main goal which was to fly from a point A to B autonomously avoiding obstacles like trees, cars and human being. The second purpose was to promote our department and has also been successful achieved.
 
-Nonetheless and because of the lack of time this project is improvable in many points. Algorithms can be made more efficient and reliable. For example, the convergence alone works very well but much less with the obstacle avoidance algorithm.
+Nonetheless and because of the lack of time this project could be improved in many points. Algorithms can be made more efficient and reliable. For example, the convergence alone works very well but much less with the obstacle avoidance algorithm.
 
-Here are some ideas to improve and continue this project. Building can be integrated in the avoidance code by setting their GPS coordinates in memory and consider them as areas the drone can’t fly.
+Here are some ideas to improve and continue this project. Building can be integrated in the avoidance code by setting their GPS coordinates in memory and consider them as areas the drone can’t fly (a combination forbidden zone and park zone).
 
-We also wanted to be very precise concerning the landing on target by finishing the convergence with the camera because of the uncertainty of position given by the GPS. For example the drone can detect tags at approximately eight meters. Thus the drone can converge to the target by looking for a tag. Then another tag on the ground can be laying in front of the other tag so the drone can precisely land on it thanks to its bottom camera.
+We also wanted to be very precise concerning the landing on target by finishing the convergence with the camera because of the uncertainty of position given by the GPS. For example the drone can detect tags at approximately eight meters. Thus the drone can converge to the target by looking for a tag. Then another tag on the ground can be laying in front of the other tag so the drone can precisely land on it using its bottom camera.
 
 To finish we have also programed a PID correction that we did not have time to use. It can be implemented to regulate the trajectory of the drone and the positioning of the drone to have tags in the center of its camera.
 

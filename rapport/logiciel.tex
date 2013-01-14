@@ -10,12 +10,12 @@ The general architecture of our code repository is explained in this tree :\\
 \end{center}
 \end{figure} 
 
-In arduino\_sources folder, all the code related to the arduino board can be found.
+In arduino\_sources folder, you can find all the code related to the arduino board.
 The software used to program the arduino is expecting .pde or .ard files.\\
 
 In the following parts, we will provide more details for each files.\\
 
-The bluetooth folder contains C sources et headers used on the target to catch informations sent by the smartphone.\\
+The bluetooth folder contains C sources and headers used on the target to catch informations sent by the smartphone.\\
 
 The embedded code section includes all the programs we created to run on the UAV embedded linux.\\
 
@@ -33,7 +33,7 @@ All the compiled modules we added on the embedded linux can be found in the modu
 
 The ``rapport'' directory contains the sources of the documentation you are reading !\\
 
-Finally, the most important folder is the one named sdk\_apps. It contains one application named auto\_flight. Like most of the c projects, you can find a Makefile, a bin/ and a src/ folder. The Makefile is configurated to create the application binary and to move it to the bin/ folder. You can find additionnal informations about the Makefile in the appedices.\\
+Finally, the most important folder is the one named sdk\_apps. It contains one application named auto\_flight. Like most of the c projects, you can find a Makefile, a bin/ and a src/ folder. The Makefile is configured to create the application binary and to move it to the bin/ folder. You can find additionnal informations about the Makefile in the appendices.\\
 
 About the src/ folder :\\
 
@@ -172,7 +172,7 @@ send_order(backward, &mv);
 
 In the auto thread, we need to control the UAV with the keyboard of the station. This automatic control is really useful in case of problems occuring during the automatic control.\\
 
-Basically, we are just running a scanf in an infinite loop. Depeding on the key pressed, we just have to call the wright function of the API.\\
+Basically, we are just running a scanf in an infinite loop. Depending on the key pressed, we just have to call the right function of the API.\\
 
 \begin{lstlisting}
   while (1) {
@@ -198,8 +198,7 @@ Basically, we are just running a scanf in an infinite loop. Depeding on the key 
       break;
 \end{lstlisting}
 
-Very helpful functionalities are battery control, by pressing the ``o'' key, and recover from emergency m
-ode by pressing ``x''. All the other command are pretty basic (``land'', ``go up'', ``go down'').\\
+Very helpful functionalities are battery control, by pressing the ``o'' key, and recover from emergency mode by pressing ``x''. All the other command are pretty basic (``land'', ``go up'', ``go down'').\\
 
 \subsection{Storing navdatas}
 
@@ -417,11 +416,11 @@ int record_data(char *buf) {
 }
 \end{lstlisting}
 
-The other thread (receiving from target), uses similar functions.
+The other thread (receiving from target) uses similar functions.
 
 \section{The target thread}
 
-This thread contains functions related to auto-convergence. We have impleted different algorithms, described thereafter.\\
+This thread contains functions related to auto-convergence. We have impleted different algorithms described thereafter.\\
 
 \subsection{Turn angle algorithm}
 
@@ -719,7 +718,7 @@ $ \lambda $ is longitude
 \end{center}
 \end{figure} 
 
-The point O is position of UAV, if we want to go to the point Q, we must turn to left an angle of 60° relative to the north. According to the formula above, it give us a negative angle -60° that means the point of destination is on the left. Another case, we have an angle of 65° on the right if we want to reach to the point P.
+The point O is the position of UAV, if we want to go to the point Q, we must turn to left an angle of 60° relative to the north. According to the formula above, it give us a negative angle -60° that means the point of destination is on the left. Another case, we have an angle of 65° on the right if we want to reach the point P.
 And the Haversine formula will also give us the distance of OQ or OP.
 
 \section{Data Avereaging Algorithm}
@@ -743,7 +742,7 @@ with $erreur = consigne - val\_capt$. Consigne is the the value to reach and $va
 
 P, D, I and T\_ech are constants defined in the headers.
 
-The function return commande which is the command to apply to your system.
+The function return ``commande'' which is the command to apply to your system.
 
 Moreover three global variables need to be used to store previous values which are $commande(n-1)$, $erreur(n-1)$ and $erreur(n-2)$. They can be reset by calling the function init. Note that this function has to be called once before the first use of the PID.
 

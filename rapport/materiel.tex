@@ -1,6 +1,6 @@
 \section{Parrot 2.0}
 The Parrot AR.Drone is a radio controlled flying quadrotor helicopter built by the French company Parrot. The drone is designed to be
-controlled by any electronic device having wi-fi connection and sufficient ressource to run a control software. Only  android, iOS and windows have offically distributed control applications. In other hand, only Windows and Linux OS are supported as a development platform.
+controlled by any electronic device having wi-fi connection and sufficient ressources to run a control software. Only  android, iOS and windows have offically distributed control applications. In other hand, only Windows and Linux OS are supported as a development platform.
 The choice of the department for this drone as a base for the project is due to the harmless character of this quadrotor.
 Two versions of the Parrot AR.Drone exists. For our project only the new version(Ar.Drone 2.0) is supported.
 \subsection{Ressources}
@@ -512,11 +512,11 @@ To catch SRF data, it is necessary to read the datasheet, and do the following t
 
 We have to send this distance to the UAV, like for the GPS strings.\\
 
-Using separately ultrasonic sensors and GPS works perfectly well. However it is difficult to use both components at the same time. The GPS extraction is using SoftwareSerial class and all incoming data are stored in a buffer of this class. Data's are written every 1 second, and if we are listening this buffer all the time (except for extraction), this buffer won't overflow. But, if data are written in this buffer while we are capturing ultrasonic wave, the writting will overflow the buffer and cause the loss of some information.\\
+Using separately ultrasonic sensors and GPS works perfectly well. However it is difficult to use both components at the same time. The GPS extraction is using SoftwareSerial class and all incoming data are stored in a buffer of this class. Data's are written every 1 second, and if we are listening this buffer all the time (except for extraction), this buffer won't overflow. But, if data are written in this buffer while we are capturing ultrasonic wave, the writing will overflow the buffer and cause the loss of some information.\\
 
 It is impossible to multithread this program, so we have to schedule manually the execution of GPS and sensor listening. We know GPS data are incoming every second, and the execution of gps extraction last 100 ms, so we dedicate 600 ms to ultrasonic listening, and then we wait for GPS data.\\
 
-This solution is not very satisfying because we take a margin of 300ms, and we don't have SRF data during 400ms, but we didn't find a better way to combine GPS and SRF sensors.\\
+This solution is not very satisfying because we take a margin of 300ms, and we don't have SRF data during 400ms, but we didn't find a better way to combine GPS and SRF sensors then this one.\\
 
 
 
@@ -554,7 +554,7 @@ Third step: read data\\
 \begin{itemize}
   \item Using PuTTY: connect via serial to /dev/rfcommX with a 9600 baudrate
   \item You can also use a self-made program
-Note that we have built an automatic script which do all the tasks for you (configuring the bluetooth, reading data and sending them by UDP). You can find it in the folder “bluetooth” located in the roots of our repository. You will need to change the MAC address of the device in the file “config\_bluetooth\_connexion.h” and if you want to change the IP address where data will be sent you need to modify the main function in the file “Get\_GPS\_data\_bluetooth.c”.\\
+Note that we have built an automatic script which do all the tasks for you (configuring the bluetooth, reading data and sending them by UDP). You can find it in the folder “bluetooth” located in the root of our repository. You will need to change the MAC address of the device in the file “config\_bluetooth\_connexion.h” and if you want to change the IP address where data will be sent you need to modify the main function in the file “Get\_GPS\_data\_bluetooth.c”.\\
 To compile you just need to type “make” in the folder then “sudo ./test” to execute it.
 \end{itemize}
 
